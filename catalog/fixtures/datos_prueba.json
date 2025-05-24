@@ -1,0 +1,152 @@
+[
+{
+  "model": "catalog.genre",
+  "pk": 1,
+  "fields": {
+    "name": "Pop"
+  }
+},
+{
+  "model": "catalog.genre",
+  "pk": 2,
+  "fields": {
+    "name": "Rock"
+  }
+},
+{
+  "model": "catalog.genre",
+  "pk": 3,
+  "fields": {
+    "name": "Reggaetón"
+  }
+},
+{
+  "model": "catalog.genre",
+  "pk": 4,
+  "fields": {
+    "name": "Electrónica"
+  }
+},
+{
+  "model": "catalog.artist",
+  "pk": 2,
+  "fields": {
+    "name": "Bad Bunny",
+    "bio": "Artista urbano puertorriqueño...",
+    "image": "artists/bad-bunny.jpg",
+    "created_at": "2025-05-22T18:20:13Z"
+  }
+},
+{
+  "model": "catalog.artist",
+  "pk": 3,
+  "fields": {
+    "name": "Rosalía",
+    "bio": "Cantautora española que fusiona flamenco con estilos urbanos y pop.",
+    "image": "artists/rosalia.jpg",
+    "created_at": "2025-05-22T18:25:16Z"
+  }
+},
+{
+  "model": "catalog.artist",
+  "pk": 4,
+  "fields": {
+    "name": "Daft Punk",
+    "bio": "Dúo francés pionero de la música electrónica con estética robótica.",
+    "image": "artists/Daft-Punk.jpg",
+    "created_at": "2025-05-22T18:26:28Z"
+  }
+},
+{
+  "model": "catalog.album",
+  "pk": 2,
+  "fields": {
+    "title": "YHLQMDLG",
+    "artist": 2,
+    "release_date": "2020-02-29",
+    "cover_image": "albums/YHLQMDLG.jpg",
+    "created_at": "2025-05-22T18:33:01Z",
+    "genres": [
+      3
+    ]
+  }
+},
+{
+  "model": "catalog.album",
+  "pk": 3,
+  "fields": {
+    "title": "MOTOMAMI",
+    "artist": 3,
+    "release_date": "2022-03-18",
+    "cover_image": "albums/MOTOMAMI.jpeg",
+    "created_at": "2025-05-22T18:34:37Z",
+    "genres": [
+      4,
+      1
+    ]
+  }
+},
+{
+  "model": "catalog.album",
+  "pk": 4,
+  "fields": {
+    "title": "Random Access Memories",
+    "artist": 4,
+    "release_date": "2013-05-17",
+    "cover_image": "albums/Random-Access-Memories.jpg",
+    "created_at": "2025-05-22T18:35:57Z",
+    "genres": [
+      4
+    ]
+  }
+},
+{
+  "model": "catalog.song",
+  "pk": 1,
+  "fields": {
+    "title": "La difícil",
+    "album": 2,
+    "artist": 2,
+    "duration": "00:03:45",
+    "track_number": 1,
+    "audio_file": "songs/Champion_-_Telecasted.mp3",
+    "created_at": "2025-05-22T18:37:18Z",
+    "genres": [
+      3
+    ]
+  }
+},
+{
+  "model": "catalog.song",
+  "pk": 2,
+  "fields": {
+    "title": "Despechá",
+    "album": 3,
+    "artist": 3,
+    "duration": "00:03:30",
+    "track_number": 1,
+    "audio_file": "songs/Seagull_-_Telecasted.mp3",
+    "created_at": "2025-05-22T19:02:17Z",
+    "genres": [
+      1
+    ]
+  }
+},
+{
+  "model": "catalog.song",
+  "pk": 3,
+  "fields": {
+    "title": "Get Lucky",
+    "album": 4,
+    "artist": 4,
+    "duration": "00:06:07",
+    "track_number": 1,
+    "audio_file": "songs/Sly_Sky_-_Telecasted.mp3",
+    "created_at": "2025-05-22T19:03:01Z",
+    "genres": [
+      4,
+      1
+    ]
+  }
+}
+]
