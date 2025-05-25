@@ -1,0 +1,21 @@
+.text-purple {
+    color: #bb86fc;
+}
+
+.text-purple:hover {
+    color: #9b5de5;
+}
+
+.album-cover {
+    height: 200px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.card:hover {
+    transform: scale(1.02);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 0 15px rgba(187, 134, 252, 0.4);
+    cursor: pointer;
+}
+

@@ -2,7 +2,8 @@ from django.shortcuts import render
 from .models import Album
 
 def catalogo_albums(request):
-    albums = Album.objects.all()
+
+    top_albums = sorted(Album.objects.all(), key=lambda a: a.average_rating(), reverse=True)[:4]
     return render(request, 'catalog/catalogo_albums.html', {
-        'albums': albums
+        'top_albums': top_albums
     })

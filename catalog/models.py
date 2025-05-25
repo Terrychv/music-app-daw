@@ -39,6 +39,12 @@ class Album(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.artist.name}"
+    
+    def average_rating(self):
+        ratings = self.ratings.all()
+        if ratings:
+            return sum(r.value for r in ratings) / len(ratings)
+        return 0
 
 
 class Song(models.Model):

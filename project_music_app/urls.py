@@ -26,4 +26,10 @@ urlpatterns = [
     path('accounts/', include('users.urls')),
     
 
-]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] 
+
+ ## Servir archivos MEDIA (imágenes subidas)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Servir archivos STATIC (tu CSS, JS, etc.)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.BASE_DIR / "static")

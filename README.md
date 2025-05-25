@@ -57,7 +57,7 @@ python manage.py migrate
 ### 5. (Opcional) Carga datos de prueba
 ```bash
 python manage.py loaddata nombre_fixture.json
-
+```
 ### 6. Crea el superusuario para entrar al admin
 ```bash
 python manage.py createsuperuser
