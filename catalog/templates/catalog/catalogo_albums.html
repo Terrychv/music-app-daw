@@ -7,14 +7,14 @@
 
 
 {% block extra_top %}
-    {% include "partials/barra-busqueda.html" %}
+{% include "partials/barra-busqueda.html" %}
 {% endblock %}
 
 {% block content %}
-    <!-- Sección: Top Rated Albums -->
-<div class="d-flex justify-content-between align-items-center mb-3 px-2">
-    <h4 class="text-white fw-bold">Top Rated Albums</h4>
-    <a href="" class="text-decoration-none text-purple fw-semibold">See all</a>
+<!-- Sección: Top Rated Albums -->
+<div class="seccion-titulo">
+    <h4>Top Rated Albums</h4>
+    <a href="#">See all</a>
 </div>
 
 <div class="row g-4 px-2">
@@ -31,7 +31,8 @@
                 </div>
 
                 <!-- Imagen -->
-                <img src="{{ album.cover_image.url }}" class="card-img-top rounded-top-3 album-cover" alt="{{ album.title }}">
+                <img src="{{ album.cover_image.url }}" class="card-img-top rounded-top-3 album-cover"
+                    alt="{{ album.title }}">
 
                 <!-- Contenido de la card -->
                 <div class="card-body">
@@ -48,7 +49,96 @@
     </div>
     {% endfor %}
 </div>
+
+
+<!-- Sección: Most Commented Songs -->
+<div class="mt-5 px-2">
+    <div class="seccion-titulo">
+        <h4>Most Commented Songs</h4>
+        <a href="#">See all</a>
+    </div>
+
+
+    <div class="list-group list-group-flush">
+        {% for song in most_commented_songs %}
+        <a href=""
+            class="list-group-item list-group-item-action bg-dark text-white rounded-3 mb-2 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <!-- Imagen de la canción -->
+                <img src="{{ song.album.cover_image.url }}" alt="{{ song.title }}" class="rounded me-3 imagen-portadas">
+
+                <!-- Título y artista -->
+                <div>
+                    <h6 class="mb-0 fw-bold">{{ song.title }}</h6>
+                    <small>{{ song.artist.name }}</small>
+                </div>
+            </div>
+
+            <!-- Comentarios -->
+            <div class="text-end text-purple">
+                <i class="bi bi-chat-dots"></i> {{ song.comments.count }} comments
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Sección: Your Recent Activity -->
+<div class="mt-5 px-2 mb-5">
+    <div class="seccion-titulo">
+        <h4>Your Recent Activity</h4>
+        <a href="#">See all</a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Comentarios recientes -->
+        <div class="col-md-6">
+            <div class="gradient-comentarios rounded-4 p-4 text-white">
+                <h6 class="fw-bold mb-3">
+                    <i class="bi bi-chat-left-text me-2"></i>Recent Comments
+                </h6>
+
+                {% for comment in recent_comments %}
+                <div class="mb-3">
+                    <div class="d-flex align-items-center mb-1">
+                        <i class="bi bi-person-circle fs-5 me-2"></i>
+                        <strong>{{ comment.content_object.title }}</strong>
+                        <small class="ms-auto ">{{ comment.created_at|timesince }} ago</small>
+                    </div>
+                    <p class="mb-1 small">You commented: "{{ comment.content|truncatechars:70 }}"</p>
+                </div>
+                {% endfor %}
+
+                <a href="#" class="text-decoration-none text-white-50 d-block mt-3 small text-center">See all my
+                    comments</a>
+            </div>
+        </div>
+
+        <!-- Valoraciones recientes -->
+        <div class="col-md-6">
+            <div class=" gradient-valoraciones rounded-4 p-4 text-white">
+                <h6 class="fw-bold mb-3">
+                    <i class="bi bi-star-fill text-warning me-2"></i>Recent Ratings
+                </h6>
+
+                {% for rating in recent_ratings %}
+                <div class="mb-3">
+                    <div class="d-flex align-items-center mb-1">
+                        <i class="bi bi-disc fs-5 me-2"></i>
+                        <strong>{{ rating.content_object.title }}</strong>
+                        <span class="ms-auto text-warning">
+                            <i class="bi bi-star-fill"></i> {{ rating.value }}
+                        </span>
+                    </div>
+                    <p class="mb-0 small">
+                        {{ rating.created_at|timesince }} ago
+                    </p>
+                </div>
+                {% endfor %}
+
+                <a href="#" class="text-decoration-none enlace-secundario d-block mt-3 ">See all my ratings</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
-
-
-

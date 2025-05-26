@@ -1,0 +1,43 @@
+{% extends "catalog/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="">
+{% endblock %}
+
+
+{% block extra_top %}
+{% include "partials/barra-busqueda.html" %}
+{% endblock %}
+
+
+{% block content %}
+<h3 class="text-white">Search results for: "{{ query }}"</h3>
+
+<h5 class="text-white mt-4">Albums</h5>
+<ul>
+    {% for album in albums %}
+    <li class="text-white">{{ album.title }}</li>
+    {% empty %}
+    <li class="text-muted">No albums found.</li>
+    {% endfor %}
+</ul>
+
+<h5 class="text-white mt-4">Songs</h5>
+<ul>
+    {% for song in songs %}
+    <li class="text-white">{{ song.title }}</li>
+    {% empty %}
+    <li class="text-muted">No songs found.</li>
+    {% endfor %}
+</ul>
+
+<h5 class="text-white mt-4">Artists</h5>
+<ul>
+    {% for artist in artists %}
+    <li class="text-white">{{ artist.name }}</li>
+    {% empty %}
+    <li class="text-muted">No artists found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

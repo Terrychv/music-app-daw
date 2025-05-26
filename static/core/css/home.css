@@ -1,0 +1,116 @@
+        body {
+        background-color: #000;
+        color: #fff;
+        font-family: 'Segoe UI', sans-serif;
+        padding-top: 80px;
+        }
+
+        .navbar-transparente {
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px); /* Para compatibilidad */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1030;
+        }
+
+        .texto-destacado {
+            color: #bb86fc;
+        }
+
+        .texto-gris {
+            color: #aaa;
+            text-align: center;
+
+        }
+
+        .portada {
+            min-height: 80vh;
+            
+        }
+
+        .buscador-principal {
+            background-color: #1f1f1f;
+            border: none;
+            color: white;
+        }
+
+        .buscador-principal::placeholder {
+            color: #aaa;
+        }
+
+        .btn-morado {
+            background-color: #bb86fc;
+            border: none;
+            color: white;
+        }
+
+        .btn-morado:hover {
+            background-color: #9b5de5;
+        }
+
+        .btn-morado-borde {
+            border: 1px solid #bb86fc;
+            color: #bb86fc;
+        }
+
+        .btn-morado-borde:hover {
+            background-color: #bb86fc;
+            color: white;
+        }
+
+        .tarjeta-funcionalidad {
+            background-color: #121212;
+            border: none;
+            color: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(187, 134, 252, 0.05);
+        }
+
+        .tarjeta-funcionalidad:hover {
+            background-color: #1e1e1e;
+            transform: translateY(-5px);
+        }
+
+        .icono-tarjeta {
+            font-size: 2rem;
+            color: #bb86fc;
+        }
+
+        .album-tarjeta img {
+            border-radius: 10px;
+            object-fit: cover;
+            height: 180px;
+            width: 100%;
+        }
+
+        .album-tarjeta h6 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .album-tarjeta small {
+            font-size: 0.8rem;
+            color: #aaa !important;
+        }
+        .seccion-cta {
+        background-color: #0f0f0f;
+        color: white;
+        }
+        .footer-principal {
+            background-color: #000;
+            font-size: 0.9rem;
+            border-top: 1px solid #222;
+        }
+
+        .footer-link {
+            color: #bbb;
+            text-decoration: none;
+            margin: 0 12px;
+        }
+
+        .footer-link:hover {
+            color: #fff;
+            text-decoration: underline;
+        }

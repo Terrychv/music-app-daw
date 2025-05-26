@@ -5,6 +5,30 @@
 .text-purple:hover {
     color: #9b5de5;
 }
+.seccion-titulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.seccion-titulo h4 {
+    color: white;
+    font-weight: bold;
+}
+
+.seccion-titulo a {
+    color: #bb86fc;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+.imagen-portadas {
+    width: 48px;
+    height: 48px;
+}
+
 
 .album-cover {
     height: 200px;
@@ -17,5 +41,23 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 0 15px rgba(187, 134, 252, 0.4);
     cursor: pointer;
+}
+
+.gradient-comentarios {
+    background: linear-gradient(to bottom, #2e0249, #57059e);
+}
+
+.gradient-valoraciones {
+    background: linear-gradient(to bottom, #ca6bae, #79153b);
+}
+
+.enlace-secundario {
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+.enlace-secundario:hover {
+    color: #fff;
 }
 
