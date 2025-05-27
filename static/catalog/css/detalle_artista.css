@@ -1,0 +1,219 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Artist Profile Section */
+        .artist-profile {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .artist-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .artist-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #2a2a3e;
+        }
+
+        .artist-info h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #ffffff, #a0a0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .artist-label {
+            color: #8a8aa0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .artist-stats {
+            color: #b0b0c0;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .about-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .about-text {
+            color: #c0c0d0;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        /* Albums Section */
+        .albums-section {
+            margin-bottom: 40px;
+        }
+
+        .albums-section h2 {
+            font-size: 2rem;
+            margin-bottom: 24px;
+            color: #ffffff;
+        }
+
+        .albums-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .album-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .album-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .album-cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #2a2a3e;
+        }
+
+        .album-info {
+            padding: 16px;
+        }
+
+        .album-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #ffffff;
+        }
+
+        .album-year {
+            color: #8a8aa0;
+            font-size: 0.9rem;
+        }
+
+        /* Popular Songs Section */
+        .songs-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .songs-section h2 {
+            font-size: 2rem;
+            margin-bottom: 24px;
+            color: #ffffff;
+        }
+
+        .songs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .songs-table th {
+            text-align: left;
+            padding: 12px 16px;
+            color: #8a8aa0;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .songs-table td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .songs-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .track-number {
+            color: #8a8aa0;
+            font-weight: 500;
+            width: 60px;
+        }
+
+        .track-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .track-cover {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #2a2a3e;
+        }
+
+        .track-title {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .track-album {
+            color: #8a8aa0;
+            font-size: 0.9rem;
+        }
+
+        .track-duration {
+            color: #8a8aa0;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+
+        .track-menu {
+            color: #8a8aa0;
+            cursor: pointer;
+            font-size: 1.2rem;
+            text-align: center;
+            width: 40px;
+        }
+
+        .track-menu:hover {
+            color: #ffffff;
+        }

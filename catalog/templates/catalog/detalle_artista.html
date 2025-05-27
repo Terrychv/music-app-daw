@@ -1,0 +1,90 @@
+{% extends "catalog/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'catalog/css/detalle_artista.css' %}">
+{% endblock %}
+
+{% block extra_top %}
+{% include "partials/barra-busqueda.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Artist Profile Section -->
+    <div class="artist-profile">
+        <div class="artist-header">
+            <img src="{{ artist.image.url|default:'/placeholder.svg?height=200&width=200&query=artist profile' }}" 
+                alt="{{ artist.name }}" class="artist-image">
+            <div class="artist-info">
+                <div class="artist-label">Artist</div>
+                <h1>{{ artist.name }}</h1>
+                <div class="artist-stats">{{ artist.albums.count }} Albums • {{ artist.songs.count }} Songs</div>
+            </div>
+        </div>
+        
+        <div class="about-section">
+            <h2>About</h2>
+            <p class="about-text">{{ artist.bio|default:"No biography available." }}</p>
+        </div>
+    </div>
+
+    <!-- Albums Section -->
+    <div class="albums-section">
+        <h2>Albums</h2>
+        <div class="albums-grid">
+            {% for album in artist.albums.all %}
+            <div class="album-card">
+                <img src="{{ album.cover_image.url|default:'/placeholder.svg?height=200&width=250&query=album cover' }}" 
+                    alt="{{ album.title }}" class="album-cover">
+                <div class="album-info">
+                    <div class="album-title">{{ album.title }}</div>
+                    <div class="album-year">{{ album.release_date.year }}</div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="no-albums">No albums available.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Popular Songs Section -->
+    <div class="songs-section">
+        <h2>Popular Songs</h2>
+        <table class="songs-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Album</th>
+                    <th>Duration</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for song in popular_songs %}
+                <tr>
+                    <td class="track-number">{{ forloop.counter }}</td>
+                    <td>
+                        <div class="track-info">
+                            <img src="{{ song.album.cover_image.url|default:'/placeholder.svg?height=40&width=40&query=album cover' }}" 
+                                alt="{{ song.album.title }}" class="track-cover">
+                            <div class="track-title">{{ song.title }}</div>
+                        </div>
+                    </td>
+                    <td class="track-album">{{ song.album.title }}</td>
+                    <td class="track-duration">{{ song.duration|time:"i:s" }}</td>
+                    <td class="track-menu">⋯</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #8a8aa0; padding: 40px;">
+                        No songs available.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends "catalog/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'catalog/css/detalle_cancion.css' %}">
+{% endblock %}
+
+{% block extra_top %}
+{% include "partials/barra-busqueda.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Song Header Section -->
+    <div class="song-header">
+        <div class="album-cover-container">
+            <img src="{{ song.album.cover_image.url|default:'/placeholder.svg?height=300&width=300&query=album cover' }}" 
+                alt="{{ song.album.title }}" class="album-cover">
+        </div>
+        
+        <div class="song-info">
+            <div class="song-label">Song</div>
+            <h1 class="song-title">{{ song.title }}</h1>
+            
+            <div class="song-meta">
+                <a href="{% url 'detalle_artista' song.artist.id %}">{{ song.artist.name }}</a> • 
+                <a href="{% url 'detalle_album' song.album.id %}">{{ song.album.title }}</a> • 
+                {{ song.album.release_date.year }}
+            </div>
+            
+            <div class="rating-section">
+                <div class="stars">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= song.average_rating %}
+                            <span class="star">★</span>
+                        {% else %}
+                            <span class="star empty">★</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <span class="rating-text">{{ song.average_rating }} ({{ song.ratings.count }} ratings)</span>
+            </div>
+            
+            <div class="song-details">
+                <div class="detail-item">
+                    <div class="detail-label">Duration</div>
+                    <div>{{ song.duration|time:"i:s" }}</div>
+                </div>
+            </div>
+            
+            <div class="genre-tags">
+                {% for genre in song.genres.all %}
+                    <span class="genre-tag">{{ genre.name }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="audio-player">
+            <div class="preview-label">30-SECOND PREVIEW</div>
+            
+            <div class="player-controls">
+                <button class="play-button" onclick="togglePlay()">▶</button>
+                <span class="time-display">0:00</span>
+                <div class="progress-bar" onclick="seekTo(event)">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="time-display">0:30</span>
+            </div>
+            
+            <div class="volume-controls">
+                <span class="volume-icon">🔊</span>
+                <div class="volume-bar" onclick="setVolume(event)">
+                    <div class="volume-fill" id="volumeFill"></div>
+                </div>
+            </div>
+            
+            {% if song.audio_file %}
+            <audio id="audioPlayer" preload="metadata">
+                <source src="{{ song.audio_file.url }}" type="audio/mpeg">
+            </audio>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Tabs Section -->
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            <button class="tab-button active" onclick="showTab('comments')">Comments</button>
+            <button class="tab-button" onclick="showTab('related')">Related Songs</button>
+        </div>
+        
+        <!-- Comments Tab -->
+        <div id="comments-tab" class="tab-content">
+            <div class="comments-section">
+                <h3>Comments ({{ song.comments.count }})</h3>
+                
+                {% if user.is_authenticated %}
+                <form class="comment-form" method="post" action="#">
+                    {% csrf_token %}
+                    <div class="user-avatar"></div>
+                    <div class="comment-input-container">
+                        <textarea class="comment-input" name="content" placeholder="Add a comment..." required></textarea>
+                        <button type="submit" class="comment-submit">Comment</button>
+                    </div>
+                </form>
+                {% endif %}
+                
+                {% for comment in song.comments.all %}
+                <div class="comment">
+                    <div class="comment-avatar">{{ comment.user.username|first|upper }}</div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <span class="comment-author">{{ comment.user.username }}</span>
+                            <span class="comment-date">{{ comment.created_at|date:"M d, Y" }}</span>
+                            <span class="comment-menu">⋯</span>
+                        </div>
+                        <div class="comment-text">{{ comment.content }}</div>
+                        <div class="comment-actions">
+                            <div class="comment-action">
+                                <span>♡</span>
+                                <span>0</span>
+                            </div>
+                            <div class="comment-action">
+                                <span>↩</span>
+                                <span>Reply</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="color: #8a8aa0; text-align: center; padding: 40px;">No comments yet. Be the first to comment!</p>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Related Songs Tab -->
+        <div id="related-tab" class="tab-content" style="display: none;">
+            <table class="related-songs-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Artist</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for related_song in related_songs %}
+                    <tr onclick="location.href='{% url 'detalle_cancion' related_song.id %}'">
+                        <td>
+                            <div class="related-track-info">
+                                <img src="{{ related_song.album.cover_image.url|default:'/placeholder.svg?height=40&width=40&query=album cover' }}" 
+                                    alt="{{ related_song.album.title }}" class="related-track-cover">
+                                <span class="related-track-title">{{ related_song.title }}</span>
+                            </div>
+                        </td>
+                        <td class="related-artist">{{ related_song.artist.name }}</td>
+                        <td class="related-duration">{{ related_song.duration|time:"i:s" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; color: #8a8aa0; padding: 40px;">
+                            No related songs found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showTab(tabName) {
+        // Hide all tabs
+        document.getElementById('comments-tab').style.display = 'none';
+        document.getElementById('related-tab').style.display = 'none';
+        
+        // Remove active class from all buttons
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        
+        // Show selected tab and activate button
+        if (tabName === 'comments') {
+            document.getElementById('comments-tab').style.display = 'block';
+            document.querySelectorAll('.tab-button')[0].classList.add('active');
+        } else {
+            document.getElementById('related-tab').style.display = 'block';
+            document.querySelectorAll('.tab-button')[1].classList.add('active');
+        }
+    }
+</script>
+{% endblock %}

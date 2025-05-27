@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Album,Song, Artist
 from django.db.models import Count
 from comments.models import Comment, Rating
@@ -36,3 +37,33 @@ def buscar_contenido(request):
     }
 
     return render(request, 'catalog/buscar_contenido.html', context)
+
+def detalle_album(request, album_id):
+    album = get_object_or_404(Album, id=album_id)
+    comments = album.comments.all().order_by('-created_at')
+    
+    context = {
+        'album': album,
+        'comments': comments,
+    }
+    return render(request, 'catalog/detalle_album.html', context)
+
+def detalle_artista(request, artist_id):
+    artist = get_object_or_404(Artist, id=artist_id)
+    popular_songs = artist.songs.all()[:10]  # Top 10 songs
+    
+    context = {
+        'artist': artist,
+        'popular_songs': popular_songs,
+    }
+    return render(request, 'catalog/detalle_artista.html', context)
+
+def detalle_cancion(request, song_id):
+    song = get_object_or_404(Song, id=song_id)
+    related_songs = Song.objects.filter(album=song.album).exclude(id=song.id)[:5]
+    
+    context = {
+        'song': song,
+        'related_songs': related_songs,
+    }
+    return render(request, 'catalog/detalle_cancion.html', context)

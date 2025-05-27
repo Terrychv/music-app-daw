@@ -44,6 +44,7 @@
         </ul>
 
         <!-- Sección: Your Activity -->
+         {% if user.is_authenticated %}
         <small class="text-uppercase mb-1">Your Activity</small>
         <ul class="nav flex-column mb-4">
             <li class="nav-item">
@@ -62,8 +63,10 @@
                 </a>
             </li>
         </ul>
+        {% endif %}
 
         <!-- Sección inferior: Cuenta -->
+         {% if user.is_staff %}
         <ul class="nav flex-column mt-auto pt-3 border-top border-secondary">
             <li class="nav-item">
                 <a href="#profile" class="nav-link text-white d-flex align-items-center">
@@ -81,7 +84,9 @@
                 </a>
             </li>
         </ul>
+        {% endif %}
     </nav>
+
 
 
 
