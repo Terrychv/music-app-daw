@@ -13,10 +13,10 @@ class CustomUser(AbstractUser):
         ('admin', 'Admin'),
     ]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
-
+    @property
     def is_client(self):
         return self.role == 'client'
-
+    @property
     def is_admin(self):
         return self.role == 'admin'
 
