@@ -4,8 +4,6 @@
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'catalog/css/catalog.css' %}">
 {% endblock %}
-
-
 {% block extra_top %}
 {% include "partials/barra-busqueda.html" %}
 {% endblock %}
@@ -22,7 +20,7 @@
     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
 
         <!-- Enlace a la vista de detalle del álbum -->
-        <a href="" class="text-decoration-none text-white">
+        <a href="{% url 'detalle_album' album.id %}" class="text-decoration-none text-white">
             <div class="card bg-dark text-white h-100 rounded-3 border-0 position-relative">
 
                 <!-- Valoración arriba a la derecha -->
@@ -61,7 +59,7 @@
 
     <div class="list-group list-group-flush">
         {% for song in most_commented_songs %}
-        <a href=""
+        <a href="{% url 'detalle_cancion' song.id %}"
             class="list-group-item list-group-item-action bg-dark text-white rounded-3 mb-2 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
                 <!-- Imagen de la canción -->

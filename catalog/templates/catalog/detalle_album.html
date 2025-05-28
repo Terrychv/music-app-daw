@@ -3,6 +3,8 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'catalog/css/detalle_album.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 {% endblock %}
 
 {% block extra_top %}
@@ -15,16 +17,17 @@
     <div class="album-header">
         <div class="album-cover">
             {% if album.cover_image %}
-                <img src="{{ album.cover_image.url }}" alt="{{ album.title }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+            <img src="{{ album.cover_image.url }}" alt="{{ album.title }}"
+                style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
             {% else %}
-                {{ album.title }}
+            {{ album.title }}
             {% endif %}
         </div>
-        
+
         <div class="album-info">
             <div style="color: rgba(255, 255, 255, 0.7); font-size: 14px; margin-bottom: 5px;">Album</div>
             <h1>{{ album.title }}</h1>
-            
+
             <div class="album-meta">
                 <span>{{ album.artist }}</span>
                 <span>•</span>
@@ -32,97 +35,93 @@
                 <span>•</span>
                 <span>{{ album.songs.count }} songs</span>
             </div>
-            
+
             <div class="rating">
                 <div class="stars">
                     {% for i in "12345" %}
-                        {% if forloop.counter <= album.rating_stars %}
-                            ★
-                        {% else %}
-                            ☆
-                        {% endif %}
+                    {% if forloop.counter <= album.rating_stars %} ★ {% else %} ☆ {% endif %} {% endfor %} </div>
+                        <span class="rating-text">{{ album.average_rating }} ({{ album.ratings.count }} ratings)</span>
+                </div>
+
+                <div class="album-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Release Date</span>
+                        <span>{{ album.release_date|date:"F j, Y" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Total Songs</span>
+                        <span>{{ album.songs.count }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Discography</span>
+                        <span>{{ album.artist }} • {{ album.artist.albums.count }} Albums</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="album-description-section">
+                <div class="album-description">
+                    {{ album.description }}
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <strong>Genres:</strong>
+                </div>
+                <div class="genres">
+                    {% for genre in album.genres.all %}
+                    <span class="genre-tag">{{ genre.name }}</span>
                     {% endfor %}
                 </div>
-                <span class="rating-text">{{ album.average_rating }} ({{ album.ratings.count }} ratings)</span>
-            </div>
-            
-            <div class="album-details">
-                <div class="detail-row">
-                    <span class="detail-label">Release Date</span>
-                    <span>{{ album.release_date|date:"F j, Y" }}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Total Songs</span>
-                    <span>{{ album.songs.count }}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Discography</span>
-                    <span>{{ album.artist }} • {{ album.artist.albums.count }} Albums</span>
-                </div>
             </div>
         </div>
-        
-        <div class="album-description-section">
-            <div class="album-description">
-                {{ album.description }}
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <strong>Genres:</strong>
-            </div>
-            <div class="genres">
-                {% for genre in album.genres.all %}
-                    <span class="genre-tag">{{ genre.name }}</span>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
 
-    <!-- Content Grid -->
-    <div class="content-grid">
-        <!-- Songs Section -->
-        <div class="songs-section">
-            <h2 class="section-title">Songs</h2>
-            <div class="songs-table">
-                <div class="table-header">
-                    <span>#</span>
-                    <span>Title</span>
-                    <span>Duration</span>
-                    <span></span>
-                </div>
-                {% for song in album.songs.all %}
-                    <div class="song-row">
-                        <span class="song-number">{{ forloop.counter }}</span>
-                        <span class="song-title">{{ song.title }}</span>
-                        <span class="song-duration">{{ song.duration }}</span>
-                        <span class="song-menu">⋯</span>
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Songs Section -->
+            <div class="songs-section">
+                <h2 class="section-title">Songs</h2>
+                <div class="songs-table">
+                    <div class="table-header">
+                        <span>#</span>
+                        <span>Title</span>
+                        <span>Duration</span>
+                        <span></span>
                     </div>
-                {% endfor %}
+                    {% for song in album.songs.all %}
+                    <a href="{% url 'detalle_cancion' song.id%}" class=" text-reset text-decortaion-none">
+                        <div class="song-row">
+                            <span class="song-number">{{ forloop.counter }}</span>
+                            <span class="song-title">{{ song.title }}</span>
+                            <span class="song-duration">{{ song.duration }}</span>
+                            <span class="song-menu">⋯</span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
 
-        <!-- Comments Section -->
-        <div class="comments-section">
-            <div class="comments-header">
-                <h2 class="section-title">Comments</h2>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <h3>Comments ({{ comments.count }})</h3>
-            </div>
-            
-            <!-- Comment Form -->
-            {% if user.is_authenticated %}
-            <form class="comment-form" method="post" action="#">
-                {% csrf_token %}
-                <div class="avatar"></div>
-                <textarea class="comment-input" name="content" placeholder="Add a comment..." required></textarea>
-                <button type="submit" class="comment-btn">Comment</button>
-            </form>
-            {% endif %}
-            
-            <!-- Comments List -->
-            {% for comment in comments %}
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <div class="comments-header">
+                    <h2 class="section-title">Comments</h2>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h3>Comments ({{ comments.count }})</h3>
+                </div>
+
+                <!-- Comment Form -->
+                {% if user.is_authenticated %}
+                <form class="comment-form" method="post" action="{% url 'detalle_album' album.id %}">
+                    {% csrf_token %}
+                    <div class="avatar"></div>
+                    <textarea class="comment-input" name="content" placeholder="Add a comment..." required></textarea>
+                    <button type="submit" class="comment-btn">Comment</button>
+                </form>
+                {% endif %}
+
+                <!-- Comments List -->
+                {% for comment in comments %}
                 <div class="comment">
                     <div class="avatar"></div>
                     <div class="comment-content">
@@ -131,17 +130,54 @@
                             <span class="comment-date">{{ comment.created_at|date:"M j, Y" }}</span>
                             <span class="more-btn">⋯</span>
                         </div>
+
                         <div class="comment-text">{{ comment.content }}</div>
+
+                        {% if comment.user == user %}
+                        <div class="mt-2">
+                            <!-- Botón que abre el modal -->
+                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal{{ comment.id }}">
+                                Delete
+                            </button>
+                            <a href="" class="btn btn-sm btn-secondary">Edit</a>
+                        </div>
+
+                        <!-- Modal de confirmación -->
+                        <div class="modal fade" id="deleteModal{{ comment.id }}" tabindex="-1"
+                            aria-labelledby="deleteModalLabel{{ comment.id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content bg-dark text-white">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel{{ comment.id }}">Confirmar
+                                            eliminación</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                            aria-label="Cerrar"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        ¿Estás seguro de que quieres eliminar este comentario?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form method="post" action="{% url 'eliminar_comentario' comment.id %}">
+                                            {% csrf_token %}
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
                         <div class="comment-actions">
-                            <span class="like-btn">
-                                ♡ 0
-                            </span>
+                            <span class="like-btn">♡ 0</span>
                             <span class="reply-btn">Reply</span>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
-</div>
-{% endblock %}
+    {% endblock %}
