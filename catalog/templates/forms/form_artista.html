@@ -1,0 +1,124 @@
+{% extends "catalog/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'catalog/css/form_artista.css' %}">
+{% endblock %}
+
+{% block extra_top %}
+{% include "partials/barra-busqueda.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <form class="form-wrapper" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-content">
+                <!-- Upload Section -->
+                <div class="upload-section">
+                    <div class="upload-area" onclick="document.getElementById('image-upload').click()">
+                        <div class="upload-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="upload-btn" onclick="document.getElementById('image-upload').click()">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        Upload Image
+                    </button>
+                    
+                    <div class="file-types">JPG, PNG or GIF</div>
+                    <div class="required-text">Artist image is required</div>
+                    
+                    <input type="file" id="image-upload" name="image" accept="image/*" style="display: none;" required>
+                </div>
+
+                <!-- Form Fields -->
+                <div class="form-fields">
+                    <div class="field-group">
+                        <label class="field-label">Artist Name</label>
+                        <input type="text" class="form-input" name="name" placeholder="Enter artist name" required>
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label">Biography</label>
+                        <textarea class="form-textarea" name="biography" placeholder="Enter artist biography"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Link Existing Content Section -->
+            <div class="link-content-section">
+                <h2 class="section-title">Link Existing Content</h2>
+                <p class="section-description">
+                    Connect this artist with existing albums and songs in the database.
+                </p>
+
+                <div class="tabs">
+                    <button type="button" class="tab active" onclick="switchTab('albums')">Albums</button>
+                    <button type="button" class="tab" onclick="switchTab('songs')">Songs</button>
+                </div>
+
+                <div id="albums-content" class="tab-content active">
+                    <div class="field-group">
+                        <label class="field-label">Select Album</label>
+                        <select class="form-select" name="albums" multiple>
+                            <option value="">Select an album</option>
+                            {% for album in albums %}
+                                <option value="{{ album.id }}">{{ album.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div id="songs-content" class="tab-content">
+                    <div class="field-group">
+                        <label class="field-label">Select Songs</label>
+                        <select class="form-select" name="songs" multiple>
+                            <option value="">Select songs</option>
+                            {% for song in songs %}
+                                <option value="{{ song.id }}">{{ song.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" onclick="window.history.back()">Cancel</button>
+                <button type="submit" class="btn-primary">Add Artist</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabName) {
+        // Remove active class from all tabs and content
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        // Add active class to clicked tab and corresponding content
+        event.target.classList.add('active');
+        document.getElementById(tabName + '-content').classList.add('active');
+    }
+
+    document.getElementById('image-upload').addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const uploadArea = document.querySelector('.upload-area');
+                uploadArea.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">`;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+</script>
+{% endblock %}
