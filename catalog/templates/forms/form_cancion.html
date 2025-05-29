@@ -2,16 +2,18 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'catalog/css/song_form.css' %}">
+<link rel="stylesheet" href="{% static 'catalog/css/form_cancion.css' %}">
 
 {% endblock %}
 
-{% block extra_top %}
-{% include "partials/barra-busqueda.html" %}
-{% endblock %}
+
 
 {% block content %}
 <div class="container">
+    <div class="page-header">
+        <h1 class="page-title text-center">Add Song</h1>
+        <p class="page-subtitle text-center">##################</p>
+    </div>
     <div class="form-container">
         <form class="form-content" method="post" enctype="multipart/form-data">
             {% csrf_token %}

@@ -6,9 +6,9 @@
 
 
         .container {
-            max-width: 1400px;
+            padding-top: 35px;
+            max-width: 70vw;
             margin: 0 auto;
-            padding: 40px 20px;
         }
 
         /* Song Header Section */

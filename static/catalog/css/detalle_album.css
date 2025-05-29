@@ -5,7 +5,8 @@
         }
         
         .container {
-            max-width: 1200px;
+            padding-top: 35px;
+            max-width: 70vw;
             margin: 0 auto;
         }
 
@@ -116,6 +117,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 40px;
+            border-radius: 16px;
         }
 
         .section-title {

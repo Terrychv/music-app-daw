@@ -4,22 +4,17 @@
             box-sizing: border-box;
         }
 
-        body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            min-height: 100vh;
-        }
+        
 
         .container {
-            max-width: 1200px;
+            padding-top: 35px;
+            max-width: 70vw;
             margin: 0 auto;
-            padding: 40px 20px;
         }
 
         /* Artist Profile Section */
         .artist-profile {
-            background: rgba(255, 255, 255, 0.05);
+            background: linear-gradient(179deg,rgb(4, 2, 8) 0%, rgb(43, 34, 53) 100%);
             border-radius: 16px;
             padding: 40px;
             margin-bottom: 40px;
@@ -94,7 +89,7 @@
         }
 
         .album-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: linear-gradient(179deg,rgb(4, 2, 8) 0%, rgb(43, 34, 53) 100%);
             border-radius: 12px;
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -131,7 +126,7 @@
 
         /* Popular Songs Section */
         .songs-section {
-            background: rgba(255, 255, 255, 0.05);
+           background: linear-gradient(179deg,rgb(4, 2, 8) 0%, rgb(43, 34, 53) 100%);
             border-radius: 16px;
             padding: 30px;
             backdrop-filter: blur(10px);
