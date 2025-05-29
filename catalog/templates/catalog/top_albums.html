@@ -1,0 +1,144 @@
+{% extends "catalog/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'catalog/css/top_albums.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}
+
+{% block extra_top %}
+{% include "partials/barra-busqueda.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Top Rated Albums</h1>
+        <p class="page-subtitle">Discover the highest rated albums according to our community</p>
+    </div>
+
+    <!-- Section Header with Filters -->
+    <div class="section-header">
+        <h2 class="section-title">
+            <i class="bi bi-star-fill"></i>
+            Community Favorites
+        </h2>
+        
+        <div class="filters-container">
+            <form method="get" id="filter-form">
+                <select name="sort" class="filter-select" onchange="document.getElementById('filter-form').submit()">
+                    <option value="highest_rated" {% if request.GET.sort == 'highest_rated' %}selected{% endif %}>Highest Rated</option>
+                    <option value="most_rated" {% if request.GET.sort == 'most_rated' %}selected{% endif %}>Most Rated</option>
+                    <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>Newest</option>
+                    <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest</option>
+                </select>
+                
+                <select name="genre" class="filter-select" onchange="document.getElementById('filter-form').submit()">
+                    <option value="" {% if not request.GET.genre %}selected{% endif %}>All Genres</option>
+                    {% for genre in genres %}
+                        <option value="{{ genre.slug }}" {% if request.GET.genre == genre.slug %}selected{% endif %}>
+                            {{ genre.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <!-- Albums Grid -->
+    {% if albums %}
+    <div class="albums-grid">
+        {% for album in albums %}
+        <div class="album-card" onclick="location.href='{% url 'detalle_album' album.id %}'">
+            <img src="{{ album.cover_image.url|default:'/placeholder.svg?height=200&width=280' }}" 
+                    alt="{{ album.title }}" class="album-cover">
+            
+            <div class="album-info">
+                <h3>{{ album.title }}</h3>
+                <p class="album-artist">{{ album.artist.name }}</p>
+                
+                <div class="album-rating">
+                    <div class="stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= album.average_rating_stars %}
+                                <span class="star">★</span>
+                            {% else %}
+                                <span class="star empty">★</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="rating-count">({{ album.total_ratings }})</span>
+                </div>
+                
+                <div class="album-genres">
+                    {% for genre in album.genres.all|slice:":3" %}
+                        <span class="genre-tag">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Albums pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link bg-dark border-secondary text-white" 
+                        href="?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link bg-dark border-secondary text-white" 
+                        href="?page={{ page_obj.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}">Previous</a>
+                </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link bg-purple border-purple">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link bg-dark border-secondary text-white" 
+                        href="?page={{ page_obj.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link bg-dark border-secondary text-white" 
+                        href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <!-- No Albums State -->
+    <div class="no-albums">
+        <i class="bi bi-disc"></i>
+        <h4>No Albums Found</h4>
+        <p>No albums match your current filters. Try adjusting your search criteria.</p>
+        <a href="{% url 'top_albums' %}" class="btn btn-purple mt-3">
+            <i class="bi bi-arrow-clockwise me-2"></i>Reset Filters
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Auto-submit form when filters change
+document.addEventListener('DOMContentLoaded', function() {
+    const selects = document.querySelectorAll('.filter-select');
+    selects.forEach(select => {
+        select.addEventListener('change', function() {
+            document.getElementById('filter-form').submit();
+        });
+    });
+});
+</script>
+{% endblock %}

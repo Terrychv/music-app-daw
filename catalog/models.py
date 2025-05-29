@@ -45,7 +45,9 @@ class Album(models.Model):
         if ratings:
             return sum(r.value for r in ratings) / len(ratings)
         return 0
-
+    
+    def total_ratings(self):
+        return self.ratings.count()
 
 class Song(models.Model):
     title = models.CharField(max_length=200)
@@ -61,6 +63,15 @@ class Song(models.Model):
 
     def __str__(self):
         return f"{self.track_number}. {self.title} - {self.artist.name}"
+    
+    def average_rating(self):
+        ratings = self.ratings.all()
+        if ratings:
+            return sum(r.value for r in ratings) / len(ratings)
+        return 0
+    
+    def total_ratings(self):
+        return self.ratings.count()
 
     class Meta:
         ordering = ['track_number']

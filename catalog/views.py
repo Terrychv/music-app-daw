@@ -21,7 +21,7 @@ def catalogo_albums(request):
     return render(request, 'catalog/catalogo_albums.html', {
         'top_albums': top_albums,
         'most_commented_songs': most_commented_songs,
-         'recent_comments': recent_comments,
+        'recent_comments': recent_comments,
         'recent_ratings': recent_ratings,
     })
 
@@ -40,6 +40,63 @@ def buscar_contenido(request):
     }
 
     return render(request, 'catalog/buscar_contenido.html', context)
+
+def top_albums(request):
+    sort_option = request.GET.get('sort', 'highest_rated')
+    genre_slug = request.GET.get('genre')
+
+    albums = Album.objects.all()
+
+    # Filtrar por género si se selecciona
+    if genre_slug:
+        albums = albums.filter(genres__slug=genre_slug)
+
+    # Ordenar según la opción seleccionada
+    if sort_option == 'highest_rated':
+        albums = sorted(albums, key=lambda a: a.average_rating() or 0, reverse=True)
+    elif sort_option == 'most_rated':
+        albums = sorted(albums, key=lambda a: a.total_ratings or 0, reverse=True)
+    elif sort_option == 'newest':
+        albums = albums.order_by('-release_date')
+    elif sort_option == 'oldest':
+        albums = albums.order_by('release_date')
+
+    genres = Genre.objects.all()
+
+    return render(request, 'catalog/top_albums.html', {
+        'albums': albums,
+        'genres': genres,
+    })
+
+def top_canciones(request):
+    sort_option = request.GET.get('sort', 'most_commented')
+    genre_slug = request.GET.get('genre')
+
+    canciones = Song.objects.all()
+
+    # Filtrar por género si se selecciona
+    if genre_slug:
+        canciones = canciones.filter(genres__slug=genre_slug)
+
+    # Ordenar según la opción seleccionada
+    if sort_option == 'most_commented':
+        canciones = canciones.annotate(num_comments=Count('comments')).order_by('-num_comments')
+    elif sort_option == 'highest_rated':
+        # Para rating medio, si tienes un método average_rating en Song similar a Album
+        canciones = sorted(canciones, key=lambda c: c.average_rating() or 0, reverse=True)
+    elif sort_option == 'most_rated':
+        canciones = sorted(canciones, key=lambda c: c.total_ratings or 0, reverse=True)
+    elif sort_option == 'newest':
+        canciones = canciones.order_by('-created_at')
+    elif sort_option == 'oldest':
+        canciones = canciones.order_by('created_at')
+
+    genres = Genre.objects.all()
+
+    return render(request, 'catalog/top_canciones.html', {
+        'canciones': canciones,
+        'genres': genres,
+    })
 
 def detalle_album(request, album_id):
     album = get_object_or_404(Album, id=album_id)
@@ -101,10 +158,33 @@ def eliminar_comentario(request, comment_id):
         return redirect('detalle_cancion', song_id=comment.content_object.id)
     else:
         return redirect('detalle_album', album_id=comment.content_object.id)
+    
+# @login_required
+# def editar_comentario(request, comment_id):
+#     comment = get_object_or_404(Comment, id=comment_id, user=request.user)
+    
+#     if request.method == 'POST':
+#         new_content = request.POST.get('content', '').strip()
+        
+#         # Store original content for potential rollback or audit
+#         original_content = comment.content
+            
+#         # Update the comment
+#         comment.content = new_content
+#         # Optional: Update modified timestamp if you have this field
+#         # comment.modified_at = timezone.now()
+#         comment.save()
+    
+#     # Redirect logic remains the same
+#     if isinstance(comment.content_object, Song):
+#         return redirect('detalle_cancion', song_id=comment.content_object.id)
+#     else:
+#         return redirect('detalle_album', album_id=comment.content_object.id)
 
     
-## Vista para los formularios , hay que revisarlo por si se puede implementar de otra manera o esa es la correcta 
-""" def form_album(request):
+## Vista para los formularios , hay que revisarlo por si se puede implementar de otra manera o esa es la correcta
+"""
+def form_album(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         artist_id = request.POST.get('artist')
@@ -175,4 +255,4 @@ def form_song(request):
     return render(request, 'forms/form_cancion.html', {
         'artists': artists,
         'genres': genres
-    }) """
+    })"""
