@@ -14,8 +14,7 @@ urlpatterns = [
     path('album/form/', views.form_album, name='form_album'),
     path('artist/form/', views.form_artist, name='form_artista'),
     path('song/form/', views.form_song, name='form_cancion'),
-    # Editar y eliminar comentarios
-    path('comments/delete/<int:comment_id>/', views.eliminar_comentario, name='eliminar_comentario'),
-    #path('comments/edit/<int:comment_id>/', views.editar_comentario, name='editar_comentario'),
+  
+ 
     
 ]

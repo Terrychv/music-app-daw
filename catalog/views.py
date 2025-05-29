@@ -148,38 +148,7 @@ def detalle_cancion(request, song_id):
     }
     return render(request, 'catalog/detalle_cancion.html', context)
 
-@login_required
-def eliminar_comentario(request, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id, user=request.user)
-    album_id = comment.content_object.id
-    comment.delete()
 
-    if isinstance(comment.content_object, Song):
-        return redirect('detalle_cancion', song_id=comment.content_object.id)
-    else:
-        return redirect('detalle_album', album_id=comment.content_object.id)
-    
-# @login_required
-# def editar_comentario(request, comment_id):
-#     comment = get_object_or_404(Comment, id=comment_id, user=request.user)
-    
-#     if request.method == 'POST':
-#         new_content = request.POST.get('content', '').strip()
-        
-#         # Store original content for potential rollback or audit
-#         original_content = comment.content
-            
-#         # Update the comment
-#         comment.content = new_content
-#         # Optional: Update modified timestamp if you have this field
-#         # comment.modified_at = timezone.now()
-#         comment.save()
-    
-#     # Redirect logic remains the same
-#     if isinstance(comment.content_object, Song):
-#         return redirect('detalle_cancion', song_id=comment.content_object.id)
-#     else:
-#         return redirect('detalle_album', album_id=comment.content_object.id)
 
     
 ## Vista para los formularios , hay que revisarlo por si se puede implementar de otra manera o esa es la correcta
