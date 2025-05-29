@@ -20,6 +20,7 @@ class AlbumAdmin(admin.ModelAdmin):
     search_fields = ('title', 'artist__name')
     list_filter = ('release_date', 'genres')
     date_hierarchy = 'release_date'
+    filter_horizontal = ('genres',)
 
 
 @admin.register(Song)
@@ -28,3 +29,4 @@ class SongAdmin(admin.ModelAdmin):
     search_fields = ('title', 'artist__name', 'album__title')
     list_filter = ('genres', 'album')
     ordering = ('album', 'track_number')
+    filter_horizontal = ('genres',)
