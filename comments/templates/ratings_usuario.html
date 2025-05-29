@@ -1,0 +1,217 @@
+{% extends "catalog/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'catalog/css/ratings_usuario.css' %}">
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+{% endblock %}
+
+{% block extra_top %}
+{% include "partials/barra-busqueda.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="page-title">My Ratings</h1>
+    
+    <div class="ratings-container">
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="showTab('songs')" id="songs-tab">Songs</button>
+            <button class="tab-btn" onclick="showTab('albums')" id="albums-tab">Albums</button>
+        </div>
+
+        <!-- Songs Tab Content -->
+        <div id="songs-content" class="tab-content">
+            {% if user_song_ratings %}
+            <table class="ratings-table">
+                <thead>
+                    <tr>
+                        <th>Song</th>
+                        <th>Artist</th>
+                        <th>Album</th>
+                        <th>Rating</th>
+                        <th>Rated On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rating in user_song_ratings %}
+                    <tr>
+                        <td>
+                            <div class="content-info">
+                                <img src="{{ rating.song.album.cover_image.url|default:'/placeholder.svg?height=45&width=45' }}" 
+                                        alt="{{ rating.song.title }}" class="content-artwork">
+                                <a href="{% url 'song_detail' rating.song.slug %}" class="content-title">
+                                    {{ rating.song.title }}
+                                </a>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="{% url 'artist_detail' rating.song.artist.slug %}" class="artist-name">
+                                {{ rating.song.artist.name }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'album_detail' rating.song.album.slug %}" class="album-name">
+                                {{ rating.song.album.title }}
+                            </a>
+                        </td>
+                        <td>
+                            <div class="star-rating">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= rating.rating %}
+                                        <span class="star">★</span>
+                                    {% else %}
+                                        <span class="star empty">★</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td class="rating-date">{{ rating.created_at|timesince }} ago</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="no-ratings">
+                <i class="bi bi-star"></i>
+                <h4>No Song Ratings Yet</h4>
+                <p>You haven't rated any songs yet. Start exploring and rate your favorite tracks!</p>
+                <a href="{% url 'catalogo_albums' %}" class="btn btn-purple mt-3">
+                    <i class="bi bi-music-note-beamed me-2"></i>Explore Songs
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Albums Tab Content -->
+        <div id="albums-content" class="tab-content" style="display: none;">
+            {% if user_album_ratings %}
+            <table class="ratings-table">
+                <thead>
+                    <tr>
+                        <th>Album</th>
+                        <th>Artist</th>
+                        <th>Songs</th>
+                        <th>Rating</th>
+                        <th>Rated On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rating in user_album_ratings %}
+                    <tr>
+                        <td>
+                            <div class="content-info">
+                                <img src="{{ rating.album.cover_image.url|default:'/placeholder.svg?height=45&width=45' }}" 
+                                        alt="{{ rating.album.title }}" class="content-artwork">
+                                <a href="{% url 'album_detail' rating.album.slug %}" class="content-title">
+                                    {{ rating.album.title }}
+                                </a>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="{% url 'artist_detail' rating.album.artist.slug %}" class="artist-name">
+                                {{ rating.album.artist.name }}
+                            </a>
+                        </td>
+                        <td>
+                            <span class="song-count">{{ rating.album.songs.count }}</span>
+                        </td>
+                        <td>
+                            <div class="star-rating">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= rating.rating %}
+                                        <span class="star">★</span>
+                                    {% else %}
+                                        <span class="star empty">★</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td class="rating-date">{{ rating.created_at|timesince }} ago</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="no-ratings">
+                <i class="bi bi-disc"></i>
+                <h4>No Album Ratings Yet</h4>
+                <p>You haven't rated any albums yet. Start exploring and rate your favorite albums!</p>
+                <a href="{% url 'catalogo_albums' %}" class="btn btn-purple mt-3">
+                    <i class="bi bi-disc me-2"></i>Explore Albums
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Ratings pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link bg-dark border-secondary text-white" href="?page=1&tab={{ current_tab }}">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link bg-dark border-secondary text-white" href="?page={{ page_obj.previous_page_number }}&tab={{ current_tab }}">Previous</a>
+                </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link bg-purple border-purple">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link bg-dark border-secondary text-white" href="?page={{ page_obj.next_page_number }}&tab={{ current_tab }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link bg-dark border-secondary text-white" href="?page={{ page_obj.paginator.num_pages }}&tab={{ current_tab }}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<script>
+function showTab(tabName) {
+    // Hide all tab contents
+    document.getElementById('songs-content').style.display = 'none';
+    document.getElementById('albums-content').style.display = 'none';
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    // Show selected tab content and activate button
+    if (tabName === 'songs') {
+        document.getElementById('songs-content').style.display = 'block';
+        document.getElementById('songs-tab').classList.add('active');
+        
+        // Update URL parameter for pagination
+        const url = new URL(window.location);
+        url.searchParams.set('tab', 'songs');
+        window.history.replaceState({}, '', url);
+    } else {
+        document.getElementById('albums-content').style.display = 'block';
+        document.getElementById('albums-tab').classList.add('active');
+        
+        // Update URL parameter for pagination
+        const url = new URL(window.location);
+        url.searchParams.set('tab', 'albums');
+        window.history.replaceState({}, '', url);
+    }
+}
+
+// Initialize tab based on URL parameter or default to songs
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentTab = urlParams.get('tab') || 'songs';
+    showTab(currentTab);
+});
+</script>
+{% endblock %}

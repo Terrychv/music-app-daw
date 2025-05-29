@@ -1,0 +1,143 @@
+{% extends 'catalog/templates/catalog/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'comments/css/comentarios_usuarios.css' %}">
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+{% endblock %}
+
+{% block extra_top %}
+{% include "partials/barra-busqueda.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="page-title">My Comments</h1>
+    
+    {% if user_comments %}
+        {% for comment in user_comments %}
+        <div class="comment-card">
+            <!-- Content Information -->
+            <div class="content-info">
+                <img src="{{ comment.content_object.get_artwork_url|default:'/placeholder.svg?height=50&width=50' }}" 
+                     alt="{{ comment.content_object.title }}" class="content-artwork">
+                <div class="content-details">
+                    <h6>{{ comment.content_object.title }}</h6>
+                    <p class="artist-name">
+                        {% if comment.content_type.model == 'album' %}
+                            by {{ comment.content_object.artist.name }}
+                        {% elif comment.content_type.model == 'song' %}
+                            by {{ comment.content_object.artist.name }}
+                        {% elif comment.content_type.model == 'artist' %}
+                            Artist
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Comment Header -->
+            <div class="comment-header">
+                <div class="user-avatar">{{ user.username|first|upper }}</div>
+                <span class="username">You</span>
+                <span class="user-handle">@{{ user.username }}</span>
+                <span class="comment-timestamp">{{ comment.created_at|timesince }} ago</span>
+            </div>
+
+            <!-- Comment Text -->
+            <div class="comment-text">
+                {{ comment.content }}
+            </div>
+
+            <!-- Comment Actions -->
+            <div class="comment-actions">
+                <a href="#" class="action-btn">
+                    <i class="bi bi-heart"></i>
+                    <span>{{ comment.likes_count|default:0 }}</span>
+                </a>
+                <a href="#" class="action-btn">
+                    <i class="bi bi-chat"></i>
+                    <span>{{ comment.replies.count|default:0 }}</span>
+                </a>
+            </div>
+
+            <!-- Replies Section -->
+            {% if comment.replies.exists %}
+            <div class="replies-section">
+                <div class="replies-header">Replies</div>
+                {% for reply in comment.replies.all|slice:":3" %}
+                <div class="reply-item">
+                    <div class="reply-avatar">{{ reply.user.username|first|upper }}</div>
+                    <div class="reply-content">
+                        <div class="reply-header">
+                            <span class="reply-username">{{ reply.user.get_full_name|default:reply.user.username }}</span>
+                            <span class="reply-handle">@{{ reply.user.username }}</span>
+                            <span class="reply-timestamp">{{ reply.created_at|timesince }} ago</span>
+                        </div>
+                        <div class="reply-text">{{ reply.content }}</div>
+                        <div class="reply-actions">
+                            <div class="reply-action">
+                                <i class="bi bi-heart"></i>
+                                <span>{{ reply.likes_count|default:0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% if comment.replies.count > 3 %}
+                <div class="mt-2">
+                    <a href="#" class="action-btn">
+                        <i class="bi bi-arrow-down"></i>
+                        <span>Show {{ comment.replies.count|add:"-3" }} more replies</span>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Comments pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link bg-dark border-secondary text-white" href="?page=1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link bg-dark border-secondary text-white" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link bg-purple border-purple">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link bg-dark border-secondary text-white" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link bg-dark border-secondary text-white" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+    {% else %}
+        <!-- No Comments State -->
+        <div class="no-comments">
+            <i class="bi bi-chat-dots"></i>
+            <h4>No Comments Yet</h4>
+            <p>You haven't made any comments yet. Start exploring music and share your thoughts!</p>
+            <a href="{% url 'catalogo_albums' %}" class="btn btn-purple mt-3">
+                <i class="bi bi-music-note-beamed me-2"></i>Explore Music
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

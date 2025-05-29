@@ -29,7 +29,7 @@
             <h1>{{ album.title }}</h1>
 
             <div class="album-meta">
-                <span>{{ album.artist }}</span>
+                <span><a href="{% url 'detalle_artista' album.artist.id %}">{{ album.artist.name }}</a></span> • 
                 <span>•</span>
                 <span>{{ album.release_date.year }}</span>
                 <span>•</span>
@@ -88,7 +88,7 @@
                         <span></span>
                     </div>
                     {% for song in album.songs.all %}
-                    <a href="{% url 'detalle_cancion' song.id%}" class=" canci text-reset text-decortaion-none">
+                    <a href="{% url 'detalle_cancion' song.id%}" class=" canciones text-reset text-decortaion-none">
                         <div class="song-row">
                             <span class="song-number">{{ forloop.counter }}</span>
                             <span class="song-title">{{ song.title }}</span>
