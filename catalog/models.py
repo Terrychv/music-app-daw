@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.contenttypes.fields import GenericRelation
+from django.conf import settings
 
 
 
@@ -22,6 +23,8 @@ class Artist(models.Model):
     bio = models.TextField(blank=True)
     image = models.ImageField(upload_to='artists/', blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='created_artists')
+
 
     def __str__(self):
         return self.name

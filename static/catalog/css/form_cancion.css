@@ -56,6 +56,15 @@
         border-color: #666;
     }
 
+    .required-text {
+        color: #ef4444;
+        font-size: 12px;
+        margin-top: 15px;
+    }
+    .required {
+        color: #ef4444;
+    }
+
     .upload-icon {
         width: 60px;
         height: 60px;

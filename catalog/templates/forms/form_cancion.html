@@ -17,50 +17,53 @@
     <div class="form-container">
         <form class="form-content" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            
+
             <!-- Upload Section -->
             <div class="upload-section">
-                <div class="upload-area" onclick="document.getElementById('cover-upload').click()">
+                <div class="upload-area" onclick="document.getElementById('audio-upload').click()">
                     <div class="upload-icon">
                         <svg viewBox="0 0 24 24">
-                            <path d="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z"/>
+                            <path d="M9,16V10H5L12,3L19,10H15V16H9M5,20V18H19V20H5Z" />
                         </svg>
                     </div>
                 </div>
-                
-                <button type="button" class="upload-btn" onclick="document.getElementById('cover-upload').click()">
+
+                <button type="button" class="upload-btn" onclick="document.getElementById('audio-upload').click()">
                     <svg class="icon" viewBox="0 0 24 24">
-                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        <path
+                            d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
                     </svg>
-                    Upload Cover
+                    Upload Audio
                 </button>
-                
-                <div class="file-types">JPG or PNG</div>
-                
-                <input type="file" id="cover-upload" name="cover_image" accept="image/*" style="display: none;" required>
+
+                <div class="file-types">MP3 OR MP4</div>
+                <div class="required-text">Audio file is required</div>
+
+                <input type="file" id="audio-upload" name="audio_file" accept="audio/*" style="display: none;" required>
+
             </div>
 
             <!-- Form Fields -->
             <div class="form-fields">
                 <div class="field-group">
-                    <label class="field-label">Song Title</label>
+                    <label class="field-label">Song Title <span class="required">*</span></label>
                     <input type="text" class="form-input" name="title" placeholder="Enter song title" required>
                 </div>
 
                 <div class="field-row">
                     <div class="field-group">
-                        <label class="field-label">Artist</label>
+                        <label class="field-label">Artist <span class="required">*</span></label>
                         <select class="form-select" name="artist" id="artist-select" onchange="updateAlbums()" required>
                             <option value="">Select artist</option>
                             {% for artist in artists %}
-                                <option value="{{ artist.id }}">{{ artist.name }}</option>
+                            <option value="{{ artist.id }}">{{ artist.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="field-group">
-                        <label class="field-label">Album</label>
-                        <select class="form-select" name="album" id="album-select" disabled>
+                        <label class="field-label">Album <span class="required">*</span></label>
+                        <select class="form-select" name="album" id="album-select" disabled required>
                             <option value="">Select an artist first</option>
                         </select>
                     </div>
@@ -69,35 +72,32 @@
                 <div class="field-row">
                     <div class="field-group">
                         <label class="field-label">Track Number</label>
-                        <input type="number" class="form-input" name="track_number" value="1" min="1" required>
+                        <input type="number" class="form-input" name="track_number" id="track-number-input" readonly
+                            required>
                     </div>
 
                     <div class="field-group">
-                        <label class="field-label">Duration</label>
-                        <input type="text" class="form-input" name="duration" placeholder="MM:SS (e.g., 3:45)" pattern="^[0-9]{1,2}:[0-5][0-9]$" required>
+                        <label class="field-label">Duration <span class="required">*</span></label>
+                        <input type="text" class="form-input" name="duration" placeholder="MM:SS (e.g., 3:45)"
+                            pattern="^[0-9]{1,2}:[0-5][0-9]$" required>
                     </div>
                 </div>
 
                 <div class="field-group">
-                    <label class="field-label">Genres</label>
-                    <div class="genres-input" onclick="toggleGenres()">
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
-                        </svg>
-                        Select genres
-                    </div>
-                    <select name="genres" multiple style="display: none;">
+                    <label class="field-label">Genres <span class="required">*</span></label>
+                    <select class="form-select" name="genres" multiple required>
                         {% for genre in genres %}
-                            <option value="{{ genre.id }}">{{ genre.name }}</option>
+                        <option value="{{ genre.id }}">{{ genre.name }}</option>
                         {% endfor %}
                     </select>
+                    <small class="form-hint">Hold Ctrl (Windows) or Command (Mac) to select multiple.</small>
                 </div>
             </div>
 
             <!-- Form Actions -->
             <div class="form-actions">
-                <button type="button" class="btn-cancel" onclick="window.history.back()">Cancel</button>
                 <button type="submit" class="btn-primary">Add Song</button>
+                <button type="button" class="btn-cancel" onclick="window.history.back()">Cancel</button>
             </div>
         </form>
     </div>
@@ -107,17 +107,17 @@
     function updateAlbums() {
         const artistSelect = document.getElementById('artist-select');
         const albumSelect = document.getElementById('album-select');
-        
+
         if (artistSelect.value) {
             albumSelect.disabled = false;
             albumSelect.innerHTML = '<option value="">Select album</option>';
 
             {% for artist in artists %}
-                if (artistSelect.value == '{{ artist.id }}') {
-                    {% for album in artist.albums.all %}
-                        albumSelect.innerHTML += '<option value="{{ album.id }}">{{ album.title }}</option>';
-                    {% endfor %}
-                }
+            if (artistSelect.value == '{{ artist.id }}') {
+                {% for album in artist.albums.all %}
+                albumSelect.innerHTML += '<option value="{{ album.id }}">{{ album.title }}</option>';
+                {% endfor %}
+            }
             {% endfor %}
         } else {
             albumSelect.disabled = true;
@@ -125,28 +125,37 @@
         }
     }
 
-    function toggleGenres() {
-        alert('Genre selection would open here');
-    }
+    document.getElementById('album-select').addEventListener('change', function () {
+        const albumId = this.value;
+        if (!albumId) return;
 
-    document.getElementById('cover-upload').addEventListener('change', function(e) {
-        if (e.target.files && e.target.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const uploadArea = document.querySelector('.upload-area');
-                uploadArea.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">`;
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        }
+        fetch(`/catalog/song/next_track/?album_id=${albumId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.next_track_number) {
+                    document.getElementById('track-number-input').value = data.next_track_number;
+                }
+            })
+            .catch(error => console.error('Error fetching next track number:', error));
     });
 
+
+
+
     // Duration input formatting
-    document.querySelector('input[name="duration"]').addEventListener('input', function(e) {
+    document.querySelector('input[name="duration"]').addEventListener('input', function (e) {
         let value = e.target.value.replace(/[^\d]/g, '');
         if (value.length >= 3) {
             value = value.substring(0, value.length - 2) + ':' + value.substring(value.length - 2);
         }
         e.target.value = value;
     });
+
+    document.getElementById('audio-upload').addEventListener('change', function (e) {
+        const fileName = e.target.files[0]?.name || "No file selected";
+        const uploadArea = document.querySelector('.upload-area');
+        uploadArea.innerHTML = `<p style="text-align: center;">${fileName}</p>`;
+    });
+
 </script>
 {% endblock %}

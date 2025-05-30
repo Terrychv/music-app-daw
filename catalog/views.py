@@ -4,6 +4,9 @@ from .models import Album,Song, Artist,Genre
 from django.db.models import Count
 from comments.models import Comment, Rating
 from django.contrib.auth.decorators import login_required
+from datetime import timedelta
+from django.http import JsonResponse
+
 
 def catalogo_albums(request):
 
@@ -152,21 +155,149 @@ def detalle_cancion(request, song_id):
 
     
 ## Vista para los formularios , hay que revisarlo por si se puede implementar de otra manera o esa es la correcta
-
+@login_required
 def form_album(request):
- 
+    user = request.user
 
-    return render(request, 'forms/form_album.html', { })
+    # Si es un usuario normal, no puede acceder a esta vista
+    if user.role == 'user':
+         return redirect('catalogo_albums')
 
+    # Si es admin, puede ver todos los artistas; si es client, solo los suyos
+    if user.is_admin:
+        artists = Artist.objects.all()
+    elif user.is_client:
+        artists = Artist.objects.filter(created_by=user)
+    else:
+        artists = Artist.objects.none()
+
+    genres = Genre.objects.all()
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        artist_id = request.POST.get('artist')
+        release_date = request.POST.get('release_date')
+        genres_ids = request.POST.getlist('genres')
+        cover_image = request.FILES.get('cover_image')
+
+        # Seguridad: validamos que el artista es accesible por el usuario
+        artist = get_object_or_404(artists, id=artist_id)
+
+        album = Album.objects.create(
+            title=title,
+            artist=artist,
+            release_date=release_date,
+            cover_image=cover_image
+        )
+
+        if genres_ids:
+            album.genres.set(genres_ids)
+
+        return redirect('detalle_album', album_id=album.id)
+
+    return render(request, 'forms/form_album.html', {
+        'artists': artists,
+        'genres': genres}
+        )
+
+@login_required
 def form_artist(request):
 
-    return render(request, 'forms/form_artista.html', {
-        
-    })
+    user = request.user
 
+    if user.role == 'user':
+         return redirect('catalogo_albums')
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        bio = request.POST.get('biography')
+        image = request.FILES.get('image')
+
+        artist = Artist.objects.create(
+            name=name,
+            bio=bio,
+            image=image,
+            created_by=user
+        )
+
+        return redirect('detalle_artista', artist_id=artist.id)
+
+    return render(request, 'forms/form_artista.html')
+
+@login_required
 def form_song(request):
-   
+    user = request.user
+
+    if user.role == 'user':
+        return redirect('catalogo_albums')
+
+    # ARTISTAS
+    if user.is_admin:
+        artists = Artist.objects.all()
+    elif user.is_client:
+        artists = Artist.objects.filter(created_by=user)
+    else:
+        artists = Artist.objects.none()
+
+    # ÁLBUMES
+    if user.is_admin:
+        albums = Album.objects.all()
+    elif user.is_client:
+        albums = Album.objects.filter(artist__created_by=user)
+    else:
+        albums = Album.objects.none()
+
+    genres = Genre.objects.all()
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        artist_id = request.POST.get('artist')
+        album_id = request.POST.get('album')
+        track_number = request.POST.get('track_number')
+        duration = request.POST.get('duration')
+        audio_file = request.FILES.get('audio_file')
+        genre_ids = request.POST.getlist('genres')
+
+        # Validación de artista y álbum según el usuario
+        artist = get_object_or_404(artists, id=artist_id)
+        album = get_object_or_404(albums, id=album_id)
+
+        # Convertir duración a formato timedelta (MM:SS)
+        minutes, seconds = map(int, duration.split(':'))
+        duration_td = timedelta(minutes=minutes, seconds=seconds)
+
+        song = Song.objects.create(
+            title=title,
+            artist=artist,
+            album=album,
+            duration=duration_td,
+            track_number=track_number,
+            audio_file=audio_file,
+        )
+
+        if genre_ids:
+            song.genres.set(genre_ids)
+
+        return redirect('detalle_cancion', song_id=song.id)
 
     return render(request, 'forms/form_cancion.html', {
-        
+        'artists': artists,
+        'albums': albums,
+        'genres': genres,
     })
+
+# funcion para obtener el siguiente numero de cancion correspondiente al album seleccionado
+@login_required
+def get_next_track_number(request):
+    album_id = request.GET.get('album_id')
+    if not album_id:
+        return JsonResponse({'error': 'Album ID is required'}, status=400)
+    
+    try:
+        album = Album.objects.get(id=album_id)
+    except Album.DoesNotExist:
+        return JsonResponse({'error': 'Album not found'}, status=404)
+    
+    existing_tracks = album.songs.count()
+    next_track = existing_tracks + 1
+    return JsonResponse({'next_track_number': next_track})

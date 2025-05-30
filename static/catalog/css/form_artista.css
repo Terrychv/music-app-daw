@@ -103,6 +103,9 @@
         font-size: 12px;
         margin-top: 15px;
     }
+    .required {
+        color: #ef4444;
+    }
 
     .form-fields {
         display: flex;

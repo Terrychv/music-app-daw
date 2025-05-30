@@ -72,7 +72,7 @@
                 </div>
 
                 <div class="field-group">
-                    <label class="field-label">Genres</label>
+                    <label class="field-label">Genres <span class="required">*</span> </label>
                     <select class="form-select" name="genres" multiple>
                         {% for genre in genres %}
                         <option value="{{ genre.id }}">{{ genre.name }}</option>
@@ -88,14 +88,20 @@
 
             <!-- Form Actions -->
             <div class="form-actions">
-                <button type="button" class="btn-cancel" onclick="window.history.back()">Cancel</button>
                 <button type="submit" class="btn-primary">Add Album</button>
+                <button type="button" class="btn-cancel"  onclick="resetForm()">Cancel</button>
+                
             </div>
         </form>
     </div>
 </div>
 
 <script>
+
+    function resetForm() {
+        const form = document.querySelector('.form-content');
+        form.reset();
+    }
     document.getElementById('cover-upload').addEventListener('change', function (e) {
         if (e.target.files && e.target.files[0]) {
             const reader = new FileReader();

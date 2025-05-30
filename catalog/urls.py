@@ -13,5 +13,6 @@ urlpatterns = [
     # formularios para crear elementos(comentado de momento para que no falle el servidor )
     path('album/form/', views.form_album, name='form_album'),
     path('artist/form/', views.form_artist, name='form_artista'),
-    path('song/form/', views.form_song, name='form_cancion'),   
+    path('song/form/', views.form_song, name='form_cancion'),  
+    path('song/next_track/', views.get_next_track_number, name='next_track_number'), 
 ]
