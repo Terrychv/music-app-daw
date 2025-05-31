@@ -46,23 +46,23 @@ def buscar_contenido(request):
 
 def top_albums(request):
     sort_option = request.GET.get('sort', 'highest_rated')
-    genre_slug = request.GET.get('genre')
+    genre_name = request.GET.get('genre')
 
     albums = Album.objects.all()
 
     # Filtrar por género si se selecciona
-    if genre_slug:
-        albums = albums.filter(genres__slug=genre_slug)
+    if genre_name:
+        albums = albums.filter(genres__name=genre_name)
 
     # Ordenar según la opción seleccionada
     if sort_option == 'highest_rated':
-        albums = sorted(albums, key=lambda a: a.average_rating() or 0, reverse=True)
+        albums = sorted(albums, key=lambda s: s.average_rating() or 0, reverse=True)
+    elif sort_option == 'lowest_rated':
+        albums = sorted(albums, key=lambda s: s.average_rating() or 0)
     elif sort_option == 'most_rated':
-        albums = sorted(albums, key=lambda a: a.total_ratings or 0, reverse=True)
-    elif sort_option == 'newest':
-        albums = albums.order_by('-release_date')
-    elif sort_option == 'oldest':
-        albums = albums.order_by('release_date')
+        albums = sorted(albums, key=lambda s: s.total_ratings() or 0, reverse=True)
+    elif sort_option == 'least_rated':
+        albums = sorted(albums, key=lambda s: s.total_ratings() or 0)
 
     genres = Genre.objects.all()
 
@@ -73,26 +73,23 @@ def top_albums(request):
 
 def top_canciones(request):
     sort_option = request.GET.get('sort', 'most_commented')
-    genre_slug = request.GET.get('genre')
+    genre_name = request.GET.get('genre')
 
     canciones = Song.objects.all()
 
     # Filtrar por género si se selecciona
-    if genre_slug:
-        canciones = canciones.filter(genres__slug=genre_slug)
+    if genre_name:
+        canciones = canciones.filter(genres__name=genre_name)
 
     # Ordenar según la opción seleccionada
-    if sort_option == 'most_commented':
-        canciones = canciones.annotate(num_comments=Count('comments')).order_by('-num_comments')
-    elif sort_option == 'highest_rated':
-        # Para rating medio, si tienes un método average_rating en Song similar a Album
-        canciones = sorted(canciones, key=lambda c: c.average_rating() or 0, reverse=True)
+    if sort_option == 'highest_rated':
+        canciones = sorted(canciones, key=lambda s: s.average_rating() or 0, reverse=True)
+    elif sort_option == 'lowest_rated':
+        canciones = sorted(canciones, key=lambda s: s.average_rating() or 0)
     elif sort_option == 'most_rated':
-        canciones = sorted(canciones, key=lambda c: c.total_ratings or 0, reverse=True)
-    elif sort_option == 'newest':
-        canciones = canciones.order_by('-created_at')
-    elif sort_option == 'oldest':
-        canciones = canciones.order_by('created_at')
+        canciones = sorted(canciones, key=lambda s: s.total_ratings() or 0, reverse=True)
+    elif sort_option == 'least_rated':
+        canciones = sorted(canciones, key=lambda s: s.total_ratings() or 0)
 
     genres = Genre.objects.all()
 

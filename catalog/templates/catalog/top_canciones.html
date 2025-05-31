@@ -31,17 +31,17 @@
                 <select name="sort" class="filter-select" onchange="document.getElementById('filter-form').submit()">
                     <option value="highest_rated" {% if request.GET.sort == 'highest_rated' %}selected{% endif %}>Highest Rated</option>
                     <option value="most_rated" {% if request.GET.sort == 'most_rated' %}selected{% endif %}>Most Rated</option>
-                    <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>Newest</option>
-                    <option value="trending" {% if request.GET.sort == 'trending' %}selected{% endif %}>Trending</option>
+                    <option value="lowest_rated" {% if request.GET.sort == 'lowest_rated' %}selected{% endif %}>Lowest Rated</option>
+                    <option value="least_rated" {% if request.GET.sort == 'least_rated' %}selected{% endif %}>Least Rated</option>
                 </select>
                 
                 <select name="genre" class="filter-select" onchange="document.getElementById('filter-form').submit()">
                     <option value="" {% if not request.GET.genre %}selected{% endif %}>All Genres</option>
                     {% for genre in genres %}
-                        <option value="{{ genre.slug }}" {% if request.GET.genre == genre.slug %}selected{% endif %}>
+                        <option value="{{ genre.name }}" {% if request.GET.genre == genre.name %}selected{% endif %}>
                             {{ genre.name }}
                         </option>
-                    {% endfor %}
+                {% endfor %}
                 </select>
             </form>
         </div>
@@ -53,7 +53,7 @@
     </div>
 
     <!-- Songs Table -->
-    {% if songs %}
+    {% if canciones %}
     <div class="songs-table-container">
         <table class="songs-table">
             <thead>
@@ -64,23 +64,23 @@
                 </tr>
             </thead>
             <tbody>
-                {% for song in songs %}
-                <tr onclick="location.href='{% url 'detalle_cancion' song.slug %}'" style="cursor: pointer;">
+                {% for cancion in canciones %}
+                <tr onclick="location.href='{% url 'detalle_cancion' cancion.id %}'" style="cursor: pointer;">
                     <td class="rank-number">{{ forloop.counter }}</td>
                     
                     <td>
                         <div class="song-info">
-                            <img src="{{ song.album.cover_image.url|default:'/placeholder.svg?height=50&width=50' }}" 
-                                    alt="{{ song.album.title }}" class="song-artwork">
+                            <img src="{{ cancion.album.cover_image.url|default:'/placeholder.svg?height=50&width=50' }}" 
+                                    alt="{{ cancion.album.title }}" class="song-artwork">
                             
                             <div class="song-details">
                                 <h4>{{ song.title }}</h4>
                                 <div class="song-meta">
-                                    <a href="{% url 'detalle_cancion' song.artist.id %}">{{ song.artist.name }}</a> • 
-                                    <a href="{% url 'detalle_album' song.album.id %}">{{ song.album.title }}</a>
+                                    <a href="{% url 'detalle_cancion' cancion.id %}">{{ cancion.title }}</a> • 
+                                    <a href="{% url 'detalle_artista' cancion.artist.id %}">{{ cancion.artist.name }}</a>
                                 </div>
                                 <div class="song-genres">
-                                    {% for genre in song.genres.all|slice:":2" %}
+                                    {% for genre in cancion.genres.all|slice:":2" %}
                                         <span class="genre-tag">{{ genre.name }}</span>
                                     {% endfor %}
                                 </div>
@@ -90,18 +90,15 @@
                     
                     <td>
                         <div class="rating-info">
-                            <div class="song-duration">{{ song.duration|time:"i:s" }}</div>
                             <div class="rating-display">
-                                <div class="stars">
-                                    {% for i in "12345" %}
-                                        {% if forloop.counter <= song.average_rating_stars %}
-                                            <span class="star">★</span>
-                                        {% else %}
-                                            <span class="star empty">★</span>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                                <span class="rating-count">({{ song.total_ratings }})</span>
+                                <span class="average-stars">
+                                    <i class="bi bi-star-fill"></i>
+                                        {{ cancion.average_rating|floatformat:1 }}
+                                </span>
+
+                                <span class="rating-count">
+                                    ({{ cancion.total_ratings }})
+                                </span>
                             </div>
                         </div>
                     </td>

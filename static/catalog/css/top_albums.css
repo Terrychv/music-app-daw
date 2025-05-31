@@ -137,17 +137,13 @@
         gap: 2px;
     }
 
-    .star {
+    .bi-star-fill {
         color: #fbbf24;
         font-size: 1rem;
     }
 
-    .star.empty {
-        color: #4b5563;
-    }
-
     .rating-count {
-        color: #9ca3af;
+        color: #fbbf24;
         font-size: 0.9rem;
     }
 
