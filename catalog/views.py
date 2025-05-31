@@ -29,20 +29,27 @@ def catalogo_albums(request):
     })
 
 def buscar_contenido(request):
-    query = request.GET.get('q', '')
+    query = request.GET.get('q')
 
+    # Si no hay búsqueda o está vacía (espacios), no se muestran resultados
+    if not query or query.strip() == '':
+        return render(request, 'catalog/buscar_contenido.html', {
+            'initial': True,
+            'query': None,  # AÑADIR ESTO para que el template no lo use
+        })
+
+    # Búsqueda válida
     albums = Album.objects.filter(title__icontains=query)
     songs = Song.objects.filter(title__icontains=query)
     artists = Artist.objects.filter(name__icontains=query)
 
-    context = {
-        'query': query,
+    return render(request, 'catalog/buscar_contenido.html', {
+        'query': query.strip(),
         'albums': albums,
         'songs': songs,
         'artists': artists,
-    }
-
-    return render(request, 'catalog/buscar_contenido.html', context)
+        'initial': False
+    })
 
 def top_albums(request):
     sort_option = request.GET.get('sort', 'highest_rated')

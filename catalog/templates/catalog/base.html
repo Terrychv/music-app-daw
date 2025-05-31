@@ -33,12 +33,12 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'top_albums' %}" class="nav-link text-white d-flex align-items-center">
+                <a href="{% url 'top_albums' %}" class="nav-link text-white d-flex align-items-center {% if request.path == '/catalog/top_albums/' %}active{% endif %}">
                     <i class="bi bi-star me-2"></i> Top Rated Albums
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'top_canciones' %}" class="nav-link text-white d-flex align-items-center">
+                <a href="{% url 'top_canciones' %}" class="nav-link text-white d-flex align-items-center {% if request.path == '/catalog/top_canciones/' %}active{% endif %}">
                     <i class="bi bi-music-note-list me-2"></i> Top Rated Songs
                 </a>
             </li>
@@ -49,7 +49,7 @@
         <small class="text-uppercase mb-1">Your Activity</small>
         <ul class="nav flex-column mb-4">
             <li class="nav-item">
-                <a href="#" class="nav-link text-white d-flex align-items-center">
+                <a href="#" class="nav-link text-white d-flex align-items-center ">
                     <i class="bi bi-chat-dots me-2"></i> My Comments
                 </a>
             </li>
@@ -71,17 +71,17 @@
         <small class="text-uppercase mb-1">Create</small>
         <ul class="nav flex-column mb-4">
             <li class="nav-item">
-                <a href="{% url 'form_artista' %}" class="nav-link text-white d-flex align-items-center">
+                <a href="{% url 'form_artista' %}" class="nav-link text-white d-flex align-items-center {% if request.path == '/catalog/artist/form/' %}active{% endif %}">
                     <i class="bi bi-chat-dots me-2"></i> Add Artist
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'form_album' %}" class="nav-link text-white d-flex align-items-center">
+                <a href="{% url 'form_album' %}" class="nav-link text-white d-flex align-items-center {% if request.path == '/catalog/album/form/' %}active{% endif %}">
                     <i class="bi bi-disc me-2"></i> Add Album
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'form_cancion' %}" class="nav-link text-white d-flex align-items-center">
+                <a href="{% url 'form_cancion' %}" class="nav-link text-white d-flex align-items-center {% if request.path == '/catalog/song/form/' %}active{% endif %}">
                     <i class="bi bi-music-note-beamed me-2"></i> Add Song
                 </a>
             </li>

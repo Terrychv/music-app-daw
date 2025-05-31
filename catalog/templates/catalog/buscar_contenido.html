@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="">
+<link rel="stylesheet" href="{% static 'catalog/css/buscar_contenido.css' %}">
 {% endblock %}
 
 
@@ -11,33 +11,77 @@
 {% endblock %}
 
 
+
 {% block content %}
-<h3 class="text-white">Search results for: "{{ query }}"</h3>
+<div class="container mt-4">
+    <h2 class="mb-4 text-white">Search</h2>
 
-<h5 class="text-white mt-4">Albums</h5>
-<ul>
-    {% for album in albums %}
-    <li class="text-white">{{ album.title }}</li>
-    {% empty %}
-    <li class="text-muted">No albums found.</li>
-    {% endfor %}
-</ul>
+    {% if initial %}
+    <p class="text-muted fs-5">Search for artists, albums, or songs. Use the bar above to begin!</p>
+    {% endif %}
 
-<h5 class="text-white mt-4">Songs</h5>
-<ul>
-    {% for song in songs %}
-    <li class="text-white">{{ song.title }}</li>
-    {% empty %}
-    <li class="text-muted">No songs found.</li>
-    {% endfor %}
-</ul>
+    {% if query and not initial %}
+    <h3 class="text-white mb-4">Search results for <strong class="text-purple">"{{ query }}"</strong></h3>
+    {% endif %}
 
-<h5 class="text-white mt-4">Artists</h5>
-<ul>
-    {% for artist in artists %}
-    <li class="text-white">{{ artist.name }}</li>
-    {% empty %}
-    <li class="text-muted">No artists found.</li>
-    {% endfor %}
-</ul>
+    {% if artists %}
+    <h4 class="text-purple mt-5">🎤 Artists</h4>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+        {% for artist in artists %}
+        <div class="col">
+            <div class="card h-100 shadow-sm bg-dark text-white border-0">
+                <img src="{{ artist.image.url }}" class="card-img-top" alt="{{ artist.name }}"
+                    style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ artist.name }}</h5>
+                    <p class="card-text">{{ artist.bio|truncatewords:20 }}</p>
+                    <a href="{% url 'detalle_artista' artist.id %}" class="btn btn-purple w-100">View Artist</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if albums %}
+    <h4 class="text-purple mt-5">💿 Albums</h4>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+        {% for album in albums %}
+        <div class="col">
+            <div class="card h-100 shadow-sm bg-dark text-white border-0">
+                <img src="{{ album.cover_image.url }}" class="card-img-top" alt="{{ album.title }}"
+                    style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ album.title }}</h5>
+                    <p class="card-text">By {{ album.artist.name }}</p>
+                    <a href="{% url 'detalle_album' album.id %}" class="btn btn-purple w-100">View Album</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if songs %}
+    <h4 class="text-purple mt-5">🎵 Songs</h4>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+        {% for song in songs %}
+        <div class="col">
+            <div class="card h-100 shadow-sm bg-dark text-white border-0">
+                <div class="card-body">
+                    <h5 class="card-title">{{ song.title }}</h5>
+                    <p class="card-text">Artist: {{ song.artist.name }}</p>
+                    <p class="card-text">Album: {{ song.album.title }}</p>
+                    <a href="{% url 'detalle_album' song.album.id %}" class="btn btn-purple w-100">Listen</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if query and not artists and not albums and not songs and not initial %}
+    <p class="text-warning">No results found for "<strong>{{ query }}</strong>".</p>
+    {% endif %}
+</div>
 {% endblock %}
