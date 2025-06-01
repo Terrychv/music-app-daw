@@ -110,6 +110,7 @@
                 {% for comment in song.comments.all %}
                 <div class="comment">
                     <div class="comment-avatar">{{ comment.user.username|first|upper }}</div>
+                    <div id="comment-{{ comment.id }}" class="comment"></div>
                     <div class="comment-content">
                         <div class="comment-header">
                             <span class="comment-author">{{ comment.user.username }}</span>

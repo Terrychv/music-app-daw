@@ -1,4 +1,4 @@
-{% extends 'catalog/templates/catalog/base.html' %}
+{% extends 'catalog/base.html' %}
 {% load static %}
 
 {% block extra_head %}
@@ -14,23 +14,25 @@
 <div class="container-fluid">
     <h1 class="page-title">My Comments</h1>
     
-    {% if user_comments %}
-        {% for comment in user_comments %}
+    {% if comentarios_usuario %}
+        {% for comentario in comentarios_usuario %}
         <div class="comment-card">
             <!-- Content Information -->
             <div class="content-info">
-                <img src="{{ comment.content_object.get_artwork_url|default:'/placeholder.svg?height=50&width=50' }}" 
-                     alt="{{ comment.content_object.title }}" class="content-artwork">
+                {% if comentario.content_object.cover_image %}
+                <img src="{{ comentario.content_object.cover_image.url }}" alt="{{ comentario.content_object.title }}" class="content-artwork">
+                {% elif comentario.content_object.album.cover_image %}
+                <img src="{{ comentario.content_object.album.cover_image.url }}" alt="{{ comentario.content_object.album.title }}" class="content-artwork">
+                {% endif %}
                 <div class="content-details">
-                    <h6>{{ comment.content_object.title }}</h6>
+                    <h6>{{ comentario.content_object.title }}</h6>
                     <p class="artist-name">
-                        {% if comment.content_type.model == 'album' %}
-                            by {{ comment.content_object.artist.name }}
-                        {% elif comment.content_type.model == 'song' %}
-                            by {{ comment.content_object.artist.name }}
-                        {% elif comment.content_type.model == 'artist' %}
-                            Artist
+                        {% if comentario.content_type.model == 'album' %}
+                            by {{ comentario.content_object.artist.name }}
+                        {% elif comentario.content_type.model == 'cancion' %}
+                            by {{ comentario.content_object.artist.name }}
                         {% endif %}
+                        <!--#comment{{ comentario.id }}" class="content-info-link">-->
                     </p>
                 </div>
             </div>
@@ -38,33 +40,32 @@
             <!-- Comment Header -->
             <div class="comment-header">
                 <div class="user-avatar">{{ user.username|first|upper }}</div>
-                <span class="username">You</span>
-                <span class="user-handle">@{{ user.username }}</span>
-                <span class="comment-timestamp">{{ comment.created_at|timesince }} ago</span>
+                <span class="username">{{ user.username }}</span>
+                <span class="comment-timestamp">{{ comentario.created_at|timesince }} ago</span>
             </div>
 
             <!-- Comment Text -->
             <div class="comment-text">
-                {{ comment.content }}
+                {{ comentario.content }}
             </div>
 
             <!-- Comment Actions -->
             <div class="comment-actions">
                 <a href="#" class="action-btn">
                     <i class="bi bi-heart"></i>
-                    <span>{{ comment.likes_count|default:0 }}</span>
+                    <span>{{ comentario.likes_count|default:0 }}</span>
                 </a>
                 <a href="#" class="action-btn">
                     <i class="bi bi-chat"></i>
-                    <span>{{ comment.replies.count|default:0 }}</span>
+                    <span>{{ comentario.replies.count|default:0 }}</span>
                 </a>
             </div>
 
             <!-- Replies Section -->
-            {% if comment.replies.exists %}
+            {% if comentario.replies.exists %}
             <div class="replies-section">
                 <div class="replies-header">Replies</div>
-                {% for reply in comment.replies.all|slice:":3" %}
+                {% for reply in comentario.replies.all|slice:":3" %}
                 <div class="reply-item">
                     <div class="reply-avatar">{{ reply.user.username|first|upper }}</div>
                     <div class="reply-content">
@@ -84,11 +85,11 @@
                 </div>
                 {% endfor %}
                 
-                {% if comment.replies.count > 3 %}
+                {% if comentario.replies.count > 3 %}
                 <div class="mt-2">
                     <a href="#" class="action-btn">
                         <i class="bi bi-arrow-down"></i>
-                        <span>Show {{ comment.replies.count|add:"-3" }} more replies</span>
+                        <span>Show {{ comentario.replies.count|add:"-3" }} more replies</span>
                     </a>
                 </div>
                 {% endif %}

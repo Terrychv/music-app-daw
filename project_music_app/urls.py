@@ -29,7 +29,7 @@ urlpatterns = [
 
 ] 
 
- ## Servir archivos MEDIA (imágenes subidas)
+## Servir archivos MEDIA (imágenes subidas)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Servir archivos STATIC (tu CSS, JS, etc.)

@@ -1,10 +1,29 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Comment, Rating
-from catalog.models import Song 
+from catalog.models import Song, Album
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 
 # Create your views here.
 
+@login_required
+def comentarios_usuario(request):
+    user = request.user
+
+    album_type = ContentType.objects.get_for_model(Album)
+    song_type = ContentType.objects.get_for_model(Song)
+
+    # Obtener todos los comentarios del usuario para álbum o canción con un solo queryset
+    comentarios_usuario = Comment.objects.filter(
+        user=user
+    ).filter(
+        Q(content_type=album_type) | Q(content_type=song_type)
+    ).order_by('-created_at')
+
+    return render(request, 'comentarios_usuario.html', {
+        'comentarios_usuario': comentarios_usuario,
+    })
 
 @login_required
 def delete_comment(request, comment_id):
