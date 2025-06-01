@@ -133,7 +133,7 @@
 
                         <div class="comment-text">{{ comment.content }}</div>
 
-                        {% if comment.user == user %}
+                        {%  if comment.user == user or user.is_admin %}
                         <div class="drowdown">
                             <span class="more-btn" data-bs-toggle="dropdown" aria-expanded="false">⋯</span>
                             <ul class="dropdown-menu dropdown-menu-end">
@@ -153,7 +153,7 @@
                     </div>
                 </div>
 
-                {% if comment.user == user %}
+                {%  if comment.user == user or user.is_admin %}
                 <!--Editar comentario-->
                 <div class="modal fade" id="editModal{{ comment.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ comment.id }}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -179,7 +179,7 @@
                     </div>
                 </div>
 
-                <!-- DEliminar -->
+                <!-- Eliminar -->
                 <div class="modal fade" id="deleteModal{{ comment.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ comment.id }}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">

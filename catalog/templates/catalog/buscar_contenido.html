@@ -14,47 +14,59 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="mb-4 text-white">Search</h2>
+
 
     {% if initial %}
-    <p class="text-muted fs-5">Search for artists, albums, or songs. Use the bar above to begin!</p>
+    <h2 class="mb-4 text-white text-center">Search for your favorite music</h2>
+    <p class="fs-5 text-center text-secondary">Find artists, albums, and songs</p>
     {% endif %}
 
     {% if query and not initial %}
-    <h3 class="text-white mb-4">Search results for <strong class="text-purple">"{{ query }}"</strong></h3>
+    <h3 class="text-white mb-4">Search results for <strong >"{{ query }}"</strong></h3>
     {% endif %}
 
     {% if artists %}
-    <h4 class="text-purple mt-5">🎤 Artists</h4>
+    <h4 class="text-purple fs-3 mt-5 mb-5">🎤 Artists</h4>
     <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
         {% for artist in artists %}
         <div class="col">
-            <div class="card h-100 shadow-sm bg-dark text-white border-0">
-                <img src="{{ artist.image.url }}" class="card-img-top" alt="{{ artist.name }}"
-                    style="height: 200px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title">{{ artist.name }}</h5>
-                    <p class="card-text">{{ artist.bio|truncatewords:20 }}</p>
-                    <a href="{% url 'detalle_artista' artist.id %}" class="btn btn-purple w-100">View Artist</a>
-                </div>
+    <div class="card h-100  text-white border-0 shadow-lg rounded-4 overflow-hidden transition-card d-flex flex-column fondo">
+        <div class="image-container">
+            <img src="{{ artist.image.url }}" class="card-img-top" alt="{{ artist.name }}">
+        </div>
+        <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ artist.name }}</h5>
+            
+            <!-- BIOGRAFÍA CON ALTURA FIJA -->
+            <p class="card-text biography">
+                {{ artist.bio|truncatewords:40 }}
+            </p>
+
+            <!-- BOTÓN SIEMPRE ABAJO -->
+            <div class="mt-auto">
+                <a href="{% url 'detalle_artista' artist.id %}" class="btn btn-purple w-100 transition-btn">
+                    View Artist
+                </a>
             </div>
         </div>
+    </div>
+</div>
         {% endfor %}
     </div>
     {% endif %}
 
     {% if albums %}
-    <h4 class="text-purple mt-5">💿 Albums</h4>
+    <h4 class="text-purple fs-3 mt-5 mb-5">💿 Albums</h4>
     <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
         {% for album in albums %}
         <div class="col">
-            <div class="card h-100 shadow-sm bg-dark text-white border-0">
+            <div class="card h-100 text-white border-0 shadow-lg rounded-4 overflow-hidden transition-card fondo ">
                 <img src="{{ album.cover_image.url }}" class="card-img-top" alt="{{ album.title }}"
                     style="height: 200px; object-fit: cover;">
                 <div class="card-body">
                     <h5 class="card-title">{{ album.title }}</h5>
                     <p class="card-text">By {{ album.artist.name }}</p>
-                    <a href="{% url 'detalle_album' album.id %}" class="btn btn-purple w-100">View Album</a>
+                    <a href="{% url 'detalle_album' album.id %}" class="btn btn-purple w-100 transition-btn">View Album</a>
                 </div>
             </div>
         </div>
@@ -63,16 +75,16 @@
     {% endif %}
 
     {% if songs %}
-    <h4 class="text-purple mt-5">🎵 Songs</h4>
+    <h4 class="text-purple  fs-3 mt-5 mb-5">🎵 Songs</h4>
     <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
         {% for song in songs %}
         <div class="col">
-            <div class="card h-100 shadow-sm bg-dark text-white border-0">
+            <div class="card h-100 text-white border-0 shadow-lg rounded-4 overflow-hidden transition-card fondo">
                 <div class="card-body">
                     <h5 class="card-title">{{ song.title }}</h5>
                     <p class="card-text">Artist: {{ song.artist.name }}</p>
                     <p class="card-text">Album: {{ song.album.title }}</p>
-                    <a href="{% url 'detalle_album' song.album.id %}" class="btn btn-purple w-100">Listen</a>
+                    <a href="{% url 'detalle_album' song.album.id %}" class="btn btn-purple w-100 transition-btn">Listen</a>
                 </div>
             </div>
         </div>

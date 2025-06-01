@@ -20,6 +20,8 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comentario de {self.user.username} en {self.content_object}"
+    class Meta:
+        ordering = ['-created_at']
 
 
 class Rating(models.Model):

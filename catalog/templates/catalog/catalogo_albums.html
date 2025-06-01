@@ -12,7 +12,7 @@
 <!-- Sección: Top Rated Albums -->
 <div class="seccion-titulo">
     <h4>Top Rated Albums</h4>
-    <a href="#">See all</a>
+    <a href="{% url 'top_albums'%}">See all</a>
 </div>
 
 <div class="row g-4 px-2">
@@ -53,7 +53,7 @@
 <div class="mt-5 px-2">
     <div class="seccion-titulo">
         <h4>Most Commented Songs</h4>
-        <a href="#">See all</a>
+        <a href="{% url 'top_canciones'%}">See all</a>
     </div>
 
 
@@ -85,7 +85,7 @@
 <div class="mt-5 px-2 mb-5">
     <div class="seccion-titulo">
         <h4>Your Recent Activity</h4>
-        <a href="#">See all</a>
+        
     </div>
 
     <div class="row g-4">
@@ -107,7 +107,7 @@
                 </div>
                 {% endfor %}
 
-                <a href="#" class="text-decoration-none text-white-50 d-block mt-3 small text-center">See all my
+                <a href="{% url 'comments:comentarios_usuario' %}" class="text-decoration-none text-white-50 d-block mt-3 small text-center">See all my
                     comments</a>
             </div>
         </div>

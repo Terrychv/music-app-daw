@@ -1,0 +1,42 @@
+
+.container{
+    max-width: 65vw;
+}
+/* Mejora general para las cards */
+.transition-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.transition-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0.5rem 1rem rgba(255, 255, 255, 0.15);
+}
+
+/* Imagen con altura fija y recorte limpio */
+.image-container img {
+    height: 200px;
+    object-fit: cover;
+    
+}
+
+/* Botón con efecto hover */
+.transition-btn {
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.transition-btn:hover {
+    transform: scale(1.02);
+    opacity: 0.9;
+}
+
+.fondo{
+     background: linear-gradient(179deg,rgb(4, 2, 8) 0%, rgb(43, 34, 53) 100%);
+
+}
+
+.biography {
+    max-height: 4.5em; /* Aproximadamente 3 líneas */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;  /* Número de líneas */
+    -webkit-box-orient: vertical;
+}
