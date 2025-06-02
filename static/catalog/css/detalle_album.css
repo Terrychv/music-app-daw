@@ -306,3 +306,12 @@
             margin-left: auto;
             cursor: pointer;
         }
+        .link-white-hover {
+            color: white;
+            text-decoration: none;
+        }
+
+        .link-white-hover:hover {
+            text-decoration: underline;
+            text-decoration-color: white;
+        }

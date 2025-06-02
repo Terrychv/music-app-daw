@@ -29,7 +29,7 @@
             <h1>{{ album.title }}</h1>
 
             <div class="album-meta">
-                <span><a href="{% url 'detalle_artista' album.artist.id %}">{{ album.artist.name }}</a></span> • 
+                <span><a href="{% url 'detalle_artista' album.artist.id %}">{{ album.artist.name }}</a></span> 
                 <span>•</span>
                 <span>{{ album.release_date.year }}</span>
                 <span>•</span>
@@ -42,7 +42,6 @@
                     {% if forloop.counter <= album.rating_stars %} ★ {% else %} ☆ {% endif %} {% endfor %} </div>
                         <span class="rating-text">{{ album.average_rating }} ({{ album.ratings.count }} ratings)</span>
                 </div>
-
                 <div class="album-details">
                     <div class="detail-row">
                         <span class="detail-label">Release Date</span>
@@ -70,7 +69,25 @@
                 <div class="genres">
                     {% for genre in album.genres.all %}
                     <span class="genre-tag">{{ genre.name }}</span>
-                    {% endfor %}
+                    {% endfor %}  
+                </div>
+                <div class="mt-4 p-1 rounded">
+                    {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'comments:rate_album' album.id %}" class="d-flex flex-wrap align-items-center gap-2">
+                        {% csrf_token %}
+                        <label for="rating" class="text-white mb-0">Your rating:</label>
+                        <select name="rating" id="rating" class="form-select form-select-sm w-auto">
+                            {% for i in "12345" %}
+                                <option value="{{ forloop.counter }}" {% if album.user_rating == forloop.counter %}selected{% endif %}>
+                                    {{ forloop.counter }} star{% if forloop.counter > 1 %}s{% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-outline-light">Rate</button>
+                    </form>
+                    {% else %}
+                    <p class="mt-2"><a href="{% url 'login' %} "  class="link-white-hover">Log in</a> to rate this album.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
