@@ -51,6 +51,12 @@ class Album(models.Model):
     
     def total_ratings(self):
         return self.ratings.count()
+    def user_rating(self, user):
+
+        if user.is_authenticated:
+            rating = self.ratings.filter(user=user).first()
+            return rating.value if rating else None
+        return None
 
 class Song(models.Model):
     title = models.CharField(max_length=200)

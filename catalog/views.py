@@ -109,6 +109,12 @@ def detalle_album(request, album_id):
     album = get_object_or_404(Album, id=album_id)
     comments = album.comments.all().order_by('-created_at')
 
+    # Si el usuario está autenticado, añadimos la puntuación que ha dado
+    if request.user.is_authenticated:
+        album.user_rating = album.user_rating(request.user)
+    else:
+        album.user_rating = None
+
     if request.method == 'POST':
         content = request.POST.get('content')
         if content:
@@ -148,10 +154,17 @@ def detalle_cancion(request, song_id):
                 content_object=song  # Usa GenericForeignKey
             )
             return redirect('detalle_cancion', song_id=song.id)
+        
+    user_rating = None
+    if request.user.is_authenticated:
+        rating_obj = Rating.objects.filter(user=request.user, content_type__model='song', object_id=song.id).first()
+        if rating_obj:
+            user_rating = rating_obj.value
     
     context = {
         'song': song,
         'related_songs': related_songs,
+        'user_rating': user_rating,
     }
     return render(request, 'catalog/detalle_cancion.html', context)
 

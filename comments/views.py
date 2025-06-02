@@ -64,3 +64,46 @@ def edit_comment(request, comment_id):
             return redirect('detalle_cancion', song_id=content_object.id)
 
     return redirect('home')
+
+@login_required
+def rate_album(request, album_id):
+    album = get_object_or_404(Album, id=album_id)
+
+    if request.method == 'POST':
+        try:
+            rating_value = int(request.POST.get('rating'))
+
+            # Validar que la puntuación esté entre 1 y 5
+            if rating_value < 1 or rating_value > 5:
+                return redirect('detalle_album', album_id=album_id)
+
+            content_type = ContentType.objects.get_for_model(Album)
+
+            # Actualizar si ya existe
+            rating, created = Rating.objects.update_or_create(
+                user=request.user,
+                content_type=content_type,
+                object_id=album.id,
+                defaults={'value': rating_value}
+            )
+
+        except (ValueError, TypeError):
+            pass  # ignoramos valores inválidos
+
+    return redirect('detalle_album', album_id=album_id)
+
+@login_required
+def rate_song(request, song_id):
+    song = get_object_or_404(Song, id=song_id)
+    rating_value = int(request.POST.get('rating', 0))
+
+    if 1 <= rating_value <= 5:
+        content_type = ContentType.objects.get_for_model(song)
+        Rating.objects.update_or_create(
+            user=request.user,
+            content_type=content_type,
+            object_id=song.id,
+            defaults={'value': rating_value}
+        )
+
+    return redirect('detalle_cancion', song_id=song.id)
