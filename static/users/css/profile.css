@@ -1,0 +1,51 @@
+.profile-page {
+    padding-top: 60px;
+    background-color: #0d0d0d;
+    min-height: 100vh;
+    color: #fff;
+}
+
+.profile-header {
+    background: linear-gradient(90deg, #6a11cb 0%, #d0d8e5 100%);
+    border-radius: 12px;
+    color: white;
+}
+
+.icon-profile {
+    font-size: 3rem;
+    color: white;
+}
+
+.card {
+    background-color: #1a1a1a;
+    color: white;
+    border-radius: 12px;
+}
+
+.card .card-title {
+    font-weight: bold;
+}
+
+.badge.bg-purple {
+    background-color: #9b59b6;
+}
+
+.tab-btn {
+    flex: 1;
+    background-color: #2b2b2b;
+    border: none;
+    color: #aaa;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background-color: #fff;
+    color: #111;
+    border-radius: 6px 6px 0 0;
+}
+
+.tab-content {
+    padding-top: 15px;
+}

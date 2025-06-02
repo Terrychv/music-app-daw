@@ -1,2 +1,100 @@
-<h1 style="color:rgb(218, 16, 16); text-align:center;">Welcome, {{ user.username }}!</h1>
+{% extends "catalog/base.html" %}
+{% load static %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'users/css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid profile-page">
+    <div class="profile-header d-flex align-items-center p-3">
+        <div class="me-3">
+            <i class="bi bi-person-circle icon-profile"></i>
+        </div>
+        <div>
+            <h2 class="mb-0 text-white">{{ user.get_full_name|default:user.username }}</h2>
+            <p class="text-muted mb-0">@{{ user.username }}</p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Sidebar: Stats -->
+        <div class="col-md-4">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <h5 class="card-title">Stats</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-chat-dots"></i> Comments: <strong>{{ comentarios|length }}</strong></li>
+                        <li><i class="bi bi-star"></i> Ratings: <strong>{{ puntuaciones|length }}</strong></li>
+                        <li><i class="bi bi-heart"></i> Likes: <strong>{{ likes_count }}</strong></li>
+                    </ul>
+
+                    <div class="mt-3">
+                        <h6 class="text-white-50">Top Genres</h6>
+                        {% for genre, count in top_genres %}
+                            <span class="badge bg-purple me-1">{{ genre }}</span>
+                        {% empty %}
+                            <p class="text-white-50 small">No genres available</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content: Tabs -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex">
+                    <button class="tab-btn active" onclick="showTab('activity')">Activity</button>
+                    <button class="tab-btn" onclick="showTab('comments')">Comments</button>
+                    <button class="tab-btn" onclick="showTab('ratings')">Ratings</button>
+                </div>
+                <div class="card-body">
+                    <div id="activity-tab" class="tab-content active">
+                        <p class="text-white-50">Recent activity will appear here.</p>
+                    </div>
+
+                    <div id="comments-tab" class="tab-content" style="display:none">
+                        {% if comentarios %}
+                            <ul class="list-group">
+                                {% for c in comentarios %}
+                                    <li class="list-group-item">
+                                        {{ c.content }} <br>
+                                        <small class="text-white-50">{{ c.created_at|timesince }} ago</small>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-white-50">No comments yet.</p>
+                        {% endif %}
+                    </div>
+
+                    <div id="ratings-tab" class="tab-content" style="display:none">
+                        {% if puntuaciones %}
+                            <ul class="list-group">
+                                {% for r in puntuaciones %}
+                                    <li class="list-group-item">
+                                        Rated <strong>{{ r.value }} ⭐</strong> on {{ r.content_object }} <br>
+                                        <small class="text-white-50">{{ r.created_at|timesince }} ago</small>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-white-50">No ratings yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`${tabId}-tab`).style.display = 'block';
+    document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+}
+</script>
+{% endblock %}

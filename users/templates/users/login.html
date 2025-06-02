@@ -1,3 +1,52 @@
+{% extends "catalog/base.html" %}
+{% load static %}
 
-<h1 style="color:rgb(199, 27, 27); text-align:center;">Pagina de login </h1>
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'users/css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light-purple">
+    <div class="card login-card p-5 shadow-lg border-0" style="width: 100%; max-width: 540px; background-color: #111; border-radius: 16px;">
+
+        <!-- Encabezado -->
+        <div class="text-center mb-4">
+            <div class="icon-circle bg-purple mb-2">
+                <i class="bi bi-music-note-beamed text-white fs-4"></i>
+            </div>
+            <h3 class="text-white fw-bold mb-0">Trackly</h3>
+            <p class="text-white-50">Your personal music catalog</p>
+        </div>
+
+        <!-- Navegación entre Login/Register -->
+        <div class="btn-group d-flex mb-4" role="group">
+            <a href="{% url 'login' %}" class="btn btn-dark active">Login</a>
+            <a href="{% url 'signup' %}" class="btn btn-dark">Register</a>
+        </div>
+
+        <!-- Formulario de login -->
+        <form method="POST" novalidate>
+            {% csrf_token %}
+            {% if form.errors %}
+                <div class="alert alert-danger py-2 small">Invalid username or password</div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="id_username" class="form-label text-white">Username</label>
+                <input type="text" name="username" class="form-control bg-dark text-white" placeholder="Enter your username" required id="id_username">
+            </div>
+
+            <div class="mb-4">
+                <label for="id_password" class="form-label text-white">Password</label>
+                <input type="password" name="password" class="form-control bg-dark text-white" placeholder="Enter your password" required id="id_password">
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-purple">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+ 
 

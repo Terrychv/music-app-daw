@@ -1,1 +1,59 @@
-<h1 style="color:rgb(185, 21, 21); text-align:center;">Pagina de Sign up</h1>
+{% extends "catalog/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'users/css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light-purple">
+    <div class="card login-card shadow-lg border-0"
+         style="width: 100%; max-width: 540px; padding: 2.5rem; background-color: #111; border-radius: 16px;">
+
+        <!-- Encabezado -->
+        <div class="text-center mb-4">
+            <div class="icon-circle bg-purple mb-2">
+                <i class="bi bi-music-note-beamed text-white fs-4"></i>
+            </div>
+            <h3 class="text-white fw-bold mb-0">Trackly</h3>
+            <p class="text-white-50 small">Your personal music catalog</p>
+        </div>
+
+        <!-- Navegación Login/Register -->
+        <div class="btn-group d-flex mb-4" role="group">
+            <a href="{% url 'login' %}" class="btn btn-dark">Login</a>
+            <a href="{% url 'signup' %}" class="btn btn-dark active">Register</a>
+        </div>
+
+        <!-- Formulario de registro -->
+        <form method="POST" novalidate>
+            {% csrf_token %}
+            {% if form.errors %}
+                <div class="alert alert-danger small py-2">Please correct the errors below.</div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="id_username" class="form-label text-white">Username</label>
+                <input type="text" name="username" class="form-control bg-dark text-white"
+                       placeholder="Your name" required id="id_username">
+            </div>
+
+            <div class="mb-3">
+                <label for="id_email" class="form-label text-white">Email</label>
+                <input type="email" name="email" class="form-control bg-dark text-white"
+                       placeholder="your@email.com" required id="id_email">
+            </div>
+
+            <div class="mb-4">
+                <label for="id_password" class="form-label text-white">Password</label>
+                <input type="password" name="password" class="form-control bg-dark text-white"
+                       placeholder="Enter a secure password" required id="id_password">
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-purple">Create account</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
