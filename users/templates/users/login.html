@@ -7,7 +7,8 @@
 
 {% block content %}
 <div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light-purple">
-    <div class="card login-card p-5 shadow-lg border-0" style="width: 100%; max-width: 540px; background-color: #111; border-radius: 16px;">
+    <div class="card login-card p-5 shadow-lg border-0"
+        style="width: 100%; max-width: 540px; background-color: #111; border-radius: 16px;">
 
         <!-- Encabezado -->
         <div class="text-center mb-4">
@@ -27,18 +28,20 @@
         <!-- Formulario de login -->
         <form method="POST" novalidate>
             {% csrf_token %}
-            {% if form.errors %}
-                <div class="alert alert-danger py-2 small">Invalid email or password</div>
+            {% if error %}
+            <div class="alert alert-danger py-2 small">{{ error }}</div>
             {% endif %}
 
             <div class="mb-3">
-                <label for="id_username" class="form-label text-white">Email</label>
-                <input type="email" name="email" class="form-control bg-dark text-white" placeholder="Enter your email" required id="id_email">
+                <label for="id_username" class="form-label text-white">Username</label>
+                <input type="text" name="username" class="form-control bg-dark text-white"
+                    placeholder="Enter your email" required id="id_email">
             </div>
 
             <div class="mb-4">
                 <label for="id_password" class="form-label text-white">Password</label>
-                <input type="password" name="password" class="form-control bg-dark text-white" placeholder="Enter your password" required id="id_password">
+                <input type="password" name="password" class="form-control bg-dark text-white"
+                    placeholder="Enter your password" required id="id_password">
             </div>
 
             <div class="d-grid">
@@ -48,5 +51,3 @@
     </div>
 </div>
 {% endblock %}
- 
-

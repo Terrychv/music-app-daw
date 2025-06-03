@@ -8,13 +8,18 @@ from catalog.models import Genre
 from django.db.models import Count
 from itertools import chain
 from collections import Counter
+from django.contrib.auth import logout
 
 def login_view(request):
+
+    if request.user.is_authenticated:
+        return redirect('catalogo_albums')
+    
     if request.method == 'POST':
-        email = request.POST.get('email')
+        username = request.POST.get('username')
         password = request.POST.get('password')
 
-        user = authenticate(request, email=email, password=password)
+        user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return redirect('catalogo_albums')
@@ -24,6 +29,10 @@ def login_view(request):
     return render(request, 'users/login.html')
 
 def signup_view(request):
+
+    if request.user.is_authenticated:
+        return redirect('catalogo_albums')
+    
     if request.method == 'POST':
         username = request.POST.get('username')
         email    = request.POST.get('email')
@@ -77,3 +86,7 @@ def profile_view(request):
         'likes_count': likes_count,
         'top_genres': top_genres,
     })
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')

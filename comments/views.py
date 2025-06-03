@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -22,8 +23,14 @@ def comentarios_usuario(request):
         Q(content_type=album_type) | Q(content_type=song_type)
     ).order_by('-created_at')
 
+    paginator = Paginator(comentarios_usuario, 5)  # 5 comentarios por página (ajústalo a gusto)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'comentarios_usuario.html', {
         'comentarios_usuario': comentarios_usuario,
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
     })
 
 @login_required
@@ -77,11 +84,13 @@ def ratings_usuario(request):
     song_data = [
         {'object': rating.content_object, 'rating': rating.value}
         for rating in user_song_ratings
+        if rating.content_object is not None
     ]
 
     album_data = [
         {'object': rating.content_object, 'rating': rating.value}
         for rating in user_album_ratings
+        if rating.content_object is not None
     ]
 
     return render(request, 'ratings_usuario.html', {
@@ -97,8 +106,8 @@ def rate_album(request, album_id):
     if request.method == 'POST':
         try:
             rating_value = int(request.POST.get('rating'))
-        except (ValueError, TypeError):
-            rating_value = 0
+            
+        
 
             # Validar que la puntuación esté entre 1 y 5
             if rating_value < 1 or rating_value > 5:
@@ -107,14 +116,13 @@ def rate_album(request, album_id):
             content_type = ContentType.objects.get_for_model(Album)
 
             # Actualizar si ya existe
-            if 1 <= rating_value <= 5:
-                content_type = ContentType.objects.get_for_model(Song)
-                Rating.objects.update_or_create(
-                    user=request.user,
-                    content_type=content_type,
-                    object_id=album.id,
-                    defaults={'value': rating_value}
-                )
+            rating, created = Rating.objects.update_or_create(
+                user=request.user,
+                content_type=content_type,
+                object_id=album.id,
+                defaults={'value': rating_value}
+            )
+           
 
         except (ValueError, TypeError):
             pass  # ignoramos valores inválidos

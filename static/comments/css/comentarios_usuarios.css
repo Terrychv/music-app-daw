@@ -221,3 +221,10 @@
         margin-bottom: 15px;
         color: #6b7280;
     }
+
+    .comment-card-link {
+    text-decoration: none;
+    color: inherit;
+
+    }
+  

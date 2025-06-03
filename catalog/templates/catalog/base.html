@@ -59,7 +59,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'comments:ratings_usuario' %}" class="nav-link text-white d-flex align-items-center">
+                <a href="{% url 'comments:ratings_usuario' %}" class="nav-link text-white d-flex align-items-center {% if request.path == '/comments/ratings_usuario/' %}active{% endif %}">
                     <i class="bi bi-star-half me-2"></i> My Ratings
                 </a>
             </li>
@@ -92,12 +92,12 @@
         {% if user.is_authenticated %}
         <ul class="nav flex-column mt-auto pt-3 border-top border-secondary">
             <li class="nav-item">
-                <a href="{% url 'profile' %}" class="nav-link text-white d-flex align-items-center">
+                <a href="{% url 'profile' %}" class="nav-link text-white d-flex align-items-center {% if request.path == '/accounts/profile/' %}active{% endif %}">
                     <i class="bi bi-person me-2"></i> Profile
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#logout" class="nav-link text-white d-flex align-items-center">
+                <a href="{% url 'logout' %}" class="nav-link text-white d-flex align-items-center">
                     <i class="bi bi-box-arrow-right me-2"></i> Logout
                 </a>
             </li>
@@ -111,11 +111,18 @@
     <!-- Main content -->
     <div class="flex-grow-1" style="margin-left: 300px;">
         <!-- Top navbar -->
-        <div class=" top-navbar d-flex justify-content-end align-items-center px-4 py-3 ">
-            <!-- <img src="{{ user.profile.avatar.url }}" class="rounded-circle" alt="avatar" width="32" height="32"> -->
-            <i class="bi bi-person-circle fs-4 text-white me-2"></i>
-            <span class="me-2">{{ user.username }}</span>
-        </div>
+        <div class="top-navbar d-flex justify-content-end align-items-center px-4 py-3">
+        <i class="bi bi-person-circle fs-4 text-white me-2"></i>
+        {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}" class="text-white text-decoration-none me-2">
+                {{ user.username }}
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}" class="text-white text-decoration-none me-2">
+                Log in
+            </a>
+        {% endif %}
+    </div>
 
         
         

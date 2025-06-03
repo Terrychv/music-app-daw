@@ -13,26 +13,34 @@
 {% block content %}
 <div class="container-fluid">
     <h1 class="page-title">My Comments</h1>
-    
+
     {% if comentarios_usuario %}
-        {% for comentario in comentarios_usuario %}
+    {% for comentario in page_obj%}
+    {% if comentario.content_type.model == 'album' %}
+        <a href="{% url 'detalle_album' comentario.content_object.id %}" class="comment-card-link">
+    {% elif comentario.content_type.model == 'song' %}
+        <a href="{% url 'detalle_cancion' comentario.content_object.id %}" class="comment-card-link">
+    {% endif %}
+    
         <div class="comment-card">
             <!-- Content Information -->
             <div class="content-info">
                 {% if comentario.content_object.cover_image %}
-                <img src="{{ comentario.content_object.cover_image.url }}" alt="{{ comentario.content_object.title }}" class="content-artwork">
+                <img src="{{ comentario.content_object.cover_image.url }}" alt="{{ comentario.content_object.title }}"
+                    class="content-artwork">
                 {% elif comentario.content_object.album.cover_image %}
-                <img src="{{ comentario.content_object.album.cover_image.url }}" alt="{{ comentario.content_object.album.title }}" class="content-artwork">
+                <img src="{{ comentario.content_object.album.cover_image.url }}"
+                    alt="{{ comentario.content_object.album.title }}" class="content-artwork">
                 {% endif %}
                 <div class="content-details">
                     <h6>{{ comentario.content_object.title }}</h6>
                     <p class="artist-name">
                         {% if comentario.content_type.model == 'album' %}
-                            by {{ comentario.content_object.artist.name }}
+                        by {{ comentario.content_object.artist.name }}
                         {% elif comentario.content_type.model == 'cancion' %}
-                            by {{ comentario.content_object.artist.name }}
+                        by {{ comentario.content_object.artist.name }}
                         {% endif %}
-                        <!--#comment{{ comentario.id }}" class="content-info-link">-->
+
                     </p>
                 </div>
             </div>
@@ -70,7 +78,8 @@
                     <div class="reply-avatar">{{ reply.user.username|first|upper }}</div>
                     <div class="reply-content">
                         <div class="reply-header">
-                            <span class="reply-username">{{ reply.user.get_full_name|default:reply.user.username }}</span>
+                            <span class="reply-username">{{ reply.user.get_full_name|default:reply.user.username
+                                }}</span>
                             <span class="reply-handle">@{{ reply.user.username }}</span>
                             <span class="reply-timestamp">{{ reply.created_at|timesince }} ago</span>
                         </div>
@@ -84,7 +93,7 @@
                     </div>
                 </div>
                 {% endfor %}
-                
+
                 {% if comentario.replies.count > 3 %}
                 <div class="mt-2">
                     <a href="#" class="action-btn">
@@ -96,49 +105,54 @@
             </div>
             {% endif %}
         </div>
-        {% endfor %}
+    </a>
 
-        <!-- Pagination -->
-        {% if is_paginated %}
-        <nav aria-label="Comments pagination" class="mt-4">
-            <ul class="pagination justify-content-center">
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link bg-dark border-secondary text-white" href="?page=1">First</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link bg-dark border-secondary text-white" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                    </li>
-                {% endif %}
+    {% endfor %}
 
-                <li class="page-item active">
-                    <span class="page-link bg-purple border-purple">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-                    </span>
-                </li>
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Comments pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link bg-dark border-secondary text-white" href="?page=1">First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link bg-dark border-secondary text-white"
+                    href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
 
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link bg-dark border-secondary text-white" href="?page={{ page_obj.next_page_number }}">Next</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link bg-dark border-secondary text-white" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
-        {% endif %}
+            <li class="page-item active">
+                <span class="page-link bg-purple border-purple">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link bg-dark border-secondary text-white"
+                    href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link bg-dark border-secondary text-white"
+                    href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
 
     {% else %}
-        <!-- No Comments State -->
-        <div class="no-comments">
-            <i class="bi bi-chat-dots"></i>
-            <h4>No Comments Yet</h4>
-            <p>You haven't made any comments yet. Start exploring music and share your thoughts!</p>
-            <a href="{% url 'catalogo_albums' %}" class="btn btn-purple mt-3">
-                <i class="bi bi-music-note-beamed me-2"></i>Explore Music
-            </a>
-        </div>
+    <!-- No Comments State -->
+    <div class="no-comments">
+        <i class="bi bi-chat-dots"></i>
+        <h4>No Comments Yet</h4>
+        <p>You haven't made any comments yet. Start exploring music and share your thoughts!</p>
+        <a href="{% url 'catalogo_albums' %}" class="btn btn-purple mt-3">
+            <i class="bi bi-music-note-beamed me-2"></i>Explore Music
+        </a>
+    </div>
     {% endif %}
 </div>
 {% endblock %}
