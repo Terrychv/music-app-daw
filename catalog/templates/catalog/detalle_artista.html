@@ -27,6 +27,15 @@
             <h2>About</h2>
             <p class="about-text">{{ artist.bio|default:"No biography available." }}</p>
         </div>
+
+        <div class="position-absolute end-0 bottom-0 m-3">
+            <button class="btn btn-dark me-2">
+                <i class="bi bi-pencil text-primary"></i> Edit
+            </button>
+            <button class="btn btn-dark">
+                <i class="bi bi-trash text-danger"></i> Delete
+            </button>
+        </div>
     </div>
 
     <!-- Albums Section -->
@@ -35,7 +44,7 @@
         <div class="albums-grid">
             {% for album in artist.albums.all %}
             <div class="album-card">
-                <img src="{{ album.cover_image.url|default:'/placeholder.svg?height=200&width=250&query=album cover' }}" 
+                <img src="{{ album.cover_image.url }}" 
                     alt="{{ album.title }}" class="album-cover">
                 <div class="album-info">
                     <div class="album-title">{{ album.title }}</div>
