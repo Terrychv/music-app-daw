@@ -6,16 +6,18 @@ from django.contrib import messages
 from comments.models import Comment, Rating
 from catalog.models import Genre
 from django.db.models import Count
+from itertools import chain
+from collections import Counter
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
 
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
-            return redirect('profile')  # Cambia si deseas otra ruta
+            return redirect('catalogo_albums')
         else:
             return render(request, 'users/login.html', {'error': 'Invalid credentials'})
 
@@ -32,8 +34,8 @@ def signup_view(request):
             messages.error(request, 'All fields are required.')
             return render(request, 'users/signup.html')
 
-        if CustomUser.objects.filter(username=username).exists():
-            messages.error(request, 'Username already taken.')
+        if CustomUser.objects.filter(email=email).exists():
+            messages.error(request, 'email already taken.')
             return render(request, 'users/signup.html')
 
         # Crear el usuario
@@ -63,8 +65,7 @@ def profile_view(request):
     album_genres = Genre.objects.filter(albums__ratings__in=album_ratings).annotate(count=Count('id'))
 
     # Combinar y ordenar por popularidad
-    from itertools import chain
-    from collections import Counter
+
 
     all_genres = list(chain(song_genres, album_genres))
     genre_counter = Counter([genre.name for genre in all_genres])

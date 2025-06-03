@@ -25,8 +25,6 @@ urlpatterns = [
     path('catalog/', include('catalog.urls')),
     path('accounts/', include('users.urls')),
     path('comments/', include('comments.urls')),
-    
-
 ] 
 
 ## Servir archivos MEDIA (imágenes subidas)

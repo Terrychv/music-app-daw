@@ -66,12 +66,39 @@ def edit_comment(request, comment_id):
     return redirect('home')
 
 @login_required
+def ratings_usuario(request):
+    song_type = ContentType.objects.get_for_model(Song)
+    album_type = ContentType.objects.get_for_model(Album)
+
+    user_song_ratings = Rating.objects.filter(user=request.user, content_type=song_type)
+    user_album_ratings = Rating.objects.filter(user=request.user, content_type=album_type)
+
+    # Empaquetamos los datos como diccionarios para facilitar la plantilla
+    song_data = [
+        {'object': rating.content_object, 'rating': rating.value}
+        for rating in user_song_ratings
+    ]
+
+    album_data = [
+        {'object': rating.content_object, 'rating': rating.value}
+        for rating in user_album_ratings
+    ]
+
+    return render(request, 'ratings_usuario.html', {
+        'user_song_ratings': song_data,
+        'user_album_ratings': album_data,
+        'tab': request.GET.get('tab', 'songs'),
+    })
+
+@login_required
 def rate_album(request, album_id):
     album = get_object_or_404(Album, id=album_id)
 
     if request.method == 'POST':
         try:
             rating_value = int(request.POST.get('rating'))
+        except (ValueError, TypeError):
+            rating_value = 0
 
             # Validar que la puntuación esté entre 1 y 5
             if rating_value < 1 or rating_value > 5:
@@ -80,12 +107,14 @@ def rate_album(request, album_id):
             content_type = ContentType.objects.get_for_model(Album)
 
             # Actualizar si ya existe
-            rating, created = Rating.objects.update_or_create(
-                user=request.user,
-                content_type=content_type,
-                object_id=album.id,
-                defaults={'value': rating_value}
-            )
+            if 1 <= rating_value <= 5:
+                content_type = ContentType.objects.get_for_model(Song)
+                Rating.objects.update_or_create(
+                    user=request.user,
+                    content_type=content_type,
+                    object_id=album.id,
+                    defaults={'value': rating_value}
+                )
 
         except (ValueError, TypeError):
             pass  # ignoramos valores inválidos

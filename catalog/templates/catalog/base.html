@@ -59,7 +59,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'top_canciones' %}" class="nav-link text-white d-flex align-items-center">
+                <a href="{% url 'comments:ratings_usuario' %}" class="nav-link text-white d-flex align-items-center">
                     <i class="bi bi-star-half me-2"></i> My Ratings
                 </a>
             </li>
@@ -92,13 +92,8 @@
         {% if user.is_authenticated %}
         <ul class="nav flex-column mt-auto pt-3 border-top border-secondary">
             <li class="nav-item">
-                <a href="#profile" class="nav-link text-white d-flex align-items-center">
+                <a href="{% url 'profile' %}" class="nav-link text-white d-flex align-items-center">
                     <i class="bi bi-person me-2"></i> Profile
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link text-white d-flex align-items-center">
-                    <i class="bi bi-gear me-2"></i> Settings
                 </a>
             </li>
             <li class="nav-item">

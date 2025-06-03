@@ -28,12 +28,12 @@
         <form method="POST" novalidate>
             {% csrf_token %}
             {% if form.errors %}
-                <div class="alert alert-danger py-2 small">Invalid username or password</div>
+                <div class="alert alert-danger py-2 small">Invalid email or password</div>
             {% endif %}
 
             <div class="mb-3">
-                <label for="id_username" class="form-label text-white">Username</label>
-                <input type="text" name="username" class="form-control bg-dark text-white" placeholder="Enter your username" required id="id_username">
+                <label for="id_username" class="form-label text-white">Email</label>
+                <input type="email" name="email" class="form-control bg-dark text-white" placeholder="Enter your email" required id="id_email">
             </div>
 
             <div class="mb-4">

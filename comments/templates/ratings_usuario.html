@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'catalog/css/ratings_usuario.css' %}">
-<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+<link rel="stylesheet" href="{% static 'comments/css/ratings_usuario.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
 
 {% block extra_top %}
@@ -39,21 +39,21 @@
                     <tr>
                         <td>
                             <div class="content-info">
-                                <img src="{{ rating.song.album.cover_image.url|default:'/placeholder.svg?height=45&width=45' }}" 
-                                        alt="{{ rating.song.title }}" class="content-artwork">
-                                <a href="{% url 'song_detail' rating.song.slug %}" class="content-title">
-                                    {{ rating.song.title }}
+                                <img src="{{ rating.object.album.cover_image.url }}" 
+                                        alt="{{ rating.object.title }}" class="content-artwork">
+                                <a href="{% url 'detalle_cancion' rating.object.id %}" class="content-title">
+                                    {{ rating.object.title }}
                                 </a>
                             </div>
                         </td>
                         <td>
-                            <a href="{% url 'artist_detail' rating.song.artist.slug %}" class="artist-name">
-                                {{ rating.song.artist.name }}
+                            <a href="{% url 'detalle_artista' rating.object.artist.id %}" class="artist-name">
+                                {{ rating.object.artist.name }}
                             </a>
                         </td>
                         <td>
-                            <a href="{% url 'album_detail' rating.song.album.slug %}" class="album-name">
-                                {{ rating.song.album.title }}
+                            <a href="{% url 'detalle_album' rating.object.album.id %}" class="album-name">
+                                {{ rating.object.album.title }}
                             </a>
                         </td>
                         <td>
@@ -92,7 +92,6 @@
                     <tr>
                         <th>Album</th>
                         <th>Artist</th>
-                        <th>Songs</th>
                         <th>Rating</th>
                         <th>Rated On</th>
                     </tr>
@@ -102,20 +101,17 @@
                     <tr>
                         <td>
                             <div class="content-info">
-                                <img src="{{ rating.album.cover_image.url|default:'/placeholder.svg?height=45&width=45' }}" 
-                                        alt="{{ rating.album.title }}" class="content-artwork">
-                                <a href="{% url 'album_detail' rating.album.slug %}" class="content-title">
-                                    {{ rating.album.title }}
+                                <img src="{{ rating.object.cover_image.url }}" 
+                                        alt="{{ rating.object.title }}" class="content-artwork">
+                                <a href="{% url 'detalle_album' rating.object.id %}" class="content-title">
+                                    {{ rating.object.title }}
                                 </a>
                             </div>
                         </td>
                         <td>
-                            <a href="{% url 'artist_detail' rating.album.artist.slug %}" class="artist-name">
-                                {{ rating.album.artist.name }}
+                            <a href="{% url 'detalle_artista' rating.object.artist.id %}" class="artist-name">
+                                {{ rating.object.artist.name }}
                             </a>
-                        </td>
-                        <td>
-                            <span class="song-count">{{ rating.album.songs.count }}</span>
                         </td>
                         <td>
                             <div class="star-rating">
