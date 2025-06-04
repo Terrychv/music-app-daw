@@ -168,9 +168,6 @@ def detalle_cancion(request, song_id):
     }
     return render(request, 'catalog/detalle_cancion.html', context)
 
-
-
-    
 ## Vista para los formularios , hay que revisarlo por si se puede implementar de otra manera o esa es la correcta
 @login_required
 def form_album(request):
@@ -178,7 +175,7 @@ def form_album(request):
 
     # Si es un usuario normal, no puede acceder a esta vista
     if user.role == 'user':
-         return redirect('catalogo_albums')
+        return redirect('catalogo_albums')
 
     # Si es admin, puede ver todos los artistas; si es client, solo los suyos
     if user.is_admin:
@@ -223,7 +220,7 @@ def form_artist(request):
     user = request.user
 
     if user.role == 'user':
-         return redirect('catalogo_albums')
+        return redirect('catalogo_albums')
 
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -302,6 +299,184 @@ def form_song(request):
         'albums': albums,
         'genres': genres,
     })
+
+@login_required
+def edit_album(request, album_id):
+    user = request.user
+
+    if user.role == 'user':
+        return redirect('catalogo_albums')
+
+    if user.is_admin:
+        artists = Artist.objects.all()
+    elif user.is_client:
+        artists = Artist.objects.filter(created_by=user)
+    else:
+        artists = Artist.objects.none()
+
+    genres = Genre.objects.all()
+    album = get_object_or_404(Album, id=album_id)
+
+    # Seguridad: si el artista no está entre los accesibles para el usuario
+    if album.artist not in artists:
+        return redirect('catalogo_albums')
+
+    if request.method == 'POST':
+        album.title = request.POST.get('title')
+        artist_id = request.POST.get('artist')
+        album.release_date = request.POST.get('release_date')
+        genres_ids = request.POST.getlist('genres')
+
+        artist = get_object_or_404(artists, id=artist_id)
+        album.artist = artist
+
+        if 'cover_image' in request.FILES:
+            album.cover_image = request.FILES['cover_image']
+
+        album.save()
+        album.genres.set(genres_ids)
+
+        return redirect('detalle_album', album_id=album.id)
+
+    return render(request, 'forms/form_album.html', {
+        'artists': artists,
+        'genres': genres,
+        'album': album,
+        'edit_mode': True
+    })
+
+@login_required
+def edit_artist(request, artist_id):
+    user = request.user
+
+    if user.role == 'user':
+        return redirect('catalogo_albums')
+
+    artist = get_object_or_404(Artist, id=artist_id)
+
+    if request.method == 'POST':
+        artist.name = request.POST.get('name')
+        artist.bio = request.POST.get('biography')
+
+        if 'image' in request.FILES:
+            artist.image = request.FILES['image']
+
+        artist.save()
+        return redirect('detalle_artista', artist_id=artist.id)
+
+    return render(request, 'forms/form_artista.html', {
+        'artist': artist,
+        'edit_mode': True,
+    })
+
+@login_required
+def edit_song(request, song_id):
+    user = request.user
+
+    if user.role == 'user':
+        return redirect('catalogo_albums')
+
+    song = get_object_or_404(Song, id=song_id)
+
+    # Filtrar artistas y álbumes según permisos del usuario
+    if user.is_admin:
+        artists = Artist.objects.all()
+        albums = Album.objects.all()
+    elif user.is_client:
+        artists = Artist.objects.filter(created_by=user)
+        albums = Album.objects.filter(artist__created_by=user)
+    else:
+        artists = Artist.objects.none()
+        albums = Album.objects.none()
+
+    genres = Genre.objects.all()
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        artist_id = request.POST.get('artist')
+        album_id = request.POST.get('album')
+        track_number = request.POST.get('track_number')
+        duration = request.POST.get('duration')
+        genre_ids = request.POST.getlist('genres')
+
+        artist = get_object_or_404(artists, id=artist_id)
+        album = get_object_or_404(albums, id=album_id)
+
+        # Actualizar campos
+        song.title = title
+        song.artist = artist
+        song.album = album
+        song.track_number = track_number
+
+        # Convertir duración a timedelta
+        if duration:
+            minutes, seconds = map(int, duration.split(':'))
+            song.duration = timedelta(minutes=minutes, seconds=seconds)
+
+        # Actualizar archivo de audio si hay uno nuevo
+        if 'audio_file' in request.FILES:
+            song.audio_file = request.FILES['audio_file']
+
+        song.save()
+
+        # Actualizar géneros
+        if genre_ids:
+            song.genres.set(genre_ids)
+        else:
+            song.genres.clear()
+
+        return redirect('detalle_cancion', song_id=song.id)
+
+    return render(request, 'forms/form_cancion.html', {
+        'song': song,
+        'artists': Artist.objects.all(),
+        'albums': Album.objects.all(), 
+        'genres': genres,
+        'edit_mode': True,
+    })
+
+@login_required
+def delete_album(request, album_id):
+    user = request.user
+    album = get_object_or_404(Album, id=album_id)
+
+    if user.role == 'user' or (user.is_client and album.artist.created_by != user):
+        return redirect('catalogo_albums')
+
+    if request.method == 'POST':
+        album.delete()
+        return redirect('catalogo_albums')
+
+    return redirect('detalle_album', album_id=album.id)
+
+@login_required
+def delete_artist(request, artist_id):
+    user = request.user
+    artist = get_object_or_404(Artist, id=artist_id)
+
+    # Solo admins o el cliente que creó el artista pueden borrar
+    if not (user.is_admin or (user.is_client and artist.created_by == user)):
+        return redirect('catalogo_albums')
+
+    if request.method == 'POST':
+        artist.delete()
+        return redirect('catalogo_albums')
+
+    return redirect('detalle_artista', artist_id=artist_id)
+
+@login_required
+def delete_song(request, song_id):
+    user = request.user
+    song = get_object_or_404(Song, id=song_id)
+
+    if not (user.is_admin or (user.is_client and song.artist.created_by == user)):
+        return redirect('catalogo_albums')
+
+    if request.method == 'POST':
+        song.delete()
+        return redirect('catalogo_albums')
+
+    return redirect('detalle_cancion', song_id=song_id)
 
 # funcion para obtener el siguiente numero de cancion correspondiente al album seleccionado
 @login_required

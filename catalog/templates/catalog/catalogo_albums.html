@@ -82,6 +82,7 @@
 </div>
 
 <!-- Sección: Your Recent Activity -->
+{% if user.is_authenticated %}
 <div class="mt-5 px-2 mb-5">
     <div class="seccion-titulo">
         <h4>Your Recent Activity</h4>
@@ -139,4 +140,5 @@
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}

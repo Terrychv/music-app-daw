@@ -10,22 +10,30 @@
 {% block content %}
 <div class="container">
     <div class="page-header">
-        <h1 class="page-title text-center">Add Album</h1>
-        <p class="page-subtitle text-center">##################</p>
+        <h1 class="page-title text-center">
+            {% if edit_mode %} Edit Album {% else %} Add Album {% endif %}
+        </h1>
+        <p class="page-subtitle text-center"> 
+            {% if edit_mode %}Update album details below{% else %}Fill in the details to create a new album{% endif %}
+        </p>
     </div>
     <div class="form-container">
-        <form class="form-content" method="post" enctype="multipart/form-data">
+        <form class="form-content" method="post" enctype="multipart/form-data" action="{% if edit_mode %}{% url 'edit_album' album.id %}{% else %}{% url 'form_album' %}{% endif %}">
             {% csrf_token %}
 
             <!-- Upload Section -->
             <div class="upload-section">
                 <div class="upload-area" onclick="document.getElementById('cover-upload').click()">
+                    {% if album and album.cover_image %}
+                        <img src="{{ album.cover_image.url }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                    {% else %}
                     <div class="upload-icon">
                         <svg viewBox="0 0 24 24">
                             <path
                                 d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
                         </svg>
                     </div>
+                    {% endif %}
                 </div>
 
                 <button type="button" class="upload-btn" onclick="document.getElementById('cover-upload').click()">
@@ -36,11 +44,11 @@
                     Upload Cover
                 </button>
 
-                <div class="file-types">JPG, PNG or GIF</div>
+                <div class="file-types">JPG or PNG</div>
                 <div class="required-text">Cover image is required</div>
 
                 <input type="file" id="cover-upload" name="cover_image" accept="image/*" style="display: none;"
-                    required>
+                {% if not album or not album.cover_image %}required{% endif %}>
             </div>
 
             <!-- Form Fields -->
@@ -49,7 +57,7 @@
                     <label class="field-label">
                         Album Title <span class="required">*</span>
                     </label>
-                    <input type="text" class="form-input" name="title" placeholder="Enter album title" required>
+                    <input type="text" class="form-input" name="title" placeholder="Enter album title" value="{{ album.title|default:'' }}" required>
                 </div>
 
                 <div class="field-group">
@@ -59,7 +67,9 @@
                     <select class="form-select" name="artist" required>
                         <option value="">Select artist</option>
                         {% for artist in artists %}
-                        <option value="{{ artist.id }}">{{ artist.name }}</option>
+                        <option value="{{ artist.id }}" {% if album and artist.id == album.artist.id %}selected{% endif %}>
+                            {{ artist.name }}
+                        </option>
                         {% endfor %}
                     </select>
                 </div>
@@ -68,29 +78,38 @@
                     <label class="field-label">
                         Release Date <span class="required">*</span>
                     </label>
-                    <input type="date" class="form-input" name="release_date" id="release_date" required>
+                    <input type="date" class="form-input" name="release_date" id="release_date" value="{{ album.release_date|date:'Y-m-d'|default:'' }}" required>
                 </div>
 
                 <div class="field-group">
                     <label class="field-label">Genres <span class="required">*</span> </label>
                     <select class="form-select" name="genres" multiple>
                         {% for genre in genres %}
-                        <option value="{{ genre.id }}">{{ genre.name }}</option>
+                        <option value="{{ genre.id }}" {% if album and genre in album.genres.all %}selected{% endif %}>
+                            {{ genre.name }}
+                        </option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <div class="field-group">
                     <label class="field-label">Album Description</label>
-                    <textarea class="form-textarea" name="description" placeholder="Enter album description"></textarea>
+                    <textarea class="form-textarea" name="description" placeholder="Enter album description">
+                        {% if album %}{{ album.description }}{% endif %}
+                    </textarea>
                 </div>
             </div>
 
             <!-- Form Actions -->
             <div class="form-actions">
-                <button type="submit" class="btn-primary">Add Album</button>
-                <button type="button" class="btn-cancel" onclick="resetForm()">Cancel</button>
-
+                <button type="submit" class="btn-primary">
+                    {% if edit_mode %}Save Changes{% else %}Add Album{% endif %}
+                </button>
+                {% if edit_mode %}
+                    <a href="{% url 'detalle_album' album.id %}" class="btn-cancel">Cancel</a>
+                {% else %}
+                    <a href="{% url 'catalogo_albums' %}" class="btn-cancel">Cancel</a>
+                {% endif %}
             </div>
         </form>
     </div>
@@ -126,7 +145,7 @@
         const year = parseInt(dateInput.split("-")[0]);
         if (year < 1000 || year > 9999) {
             e.preventDefault();
-            alert("El año debe tener exactamente 4 cifras.");
+            alert("Year must to have 4 numbers");
         }
     });
 </script>

@@ -5,28 +5,34 @@
 <link rel="stylesheet" href="{% static 'catalog/css/form_artista.css' %}">
 {% endblock %}
 
-
-
 {% block content %}
 <div class="container">
     <div class="page-header">
-        <h1 class="page-title text-center">Add Artist</h1>
-        <p class="page-subtitle text-center">##################</p>
+        <h1 class="page-title text-center">
+            {% if edit_mode %} Edit Artist {% else %} Add Artist {% endif %}
+        </h1>
+        <p class="page-subtitle text-center">
+            {% if edit_mode %}Update artist details below{% else %}Fill in the details to create a new artist{% endif %}
+        </p>
     </div>
     <div class="form-container">
-        <form class="form-wrapper" method="post" enctype="multipart/form-data">
+        <form class="form-wrapper" method="post" enctype="multipart/form-data" action="{% if edit_mode %}{% url 'edit_artist' artist.id %}{% else %}{% url 'form_artista' %}{% endif %}">
             {% csrf_token %}
 
             <div class="form-content">
                 <!-- Upload Section -->
                 <div class="upload-section">
                     <div class="upload-area" onclick="document.getElementById('image-upload').click()">
+                        {% if artist and artist.image %}
+                            <img src="{{ artist.image.url }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+                        {% else %}
                         <div class="upload-icon">
                             <svg viewBox="0 0 24 24">
                                 <path
                                     d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
                             </svg>
                         </div>
+                        {% endif %}
                     </div>
 
                     <button type="button" class="upload-btn" onclick="document.getElementById('image-upload').click()">
@@ -37,23 +43,24 @@
                         Upload Image
                     </button>
 
-                    <div class="file-types">JPG, PNG or GIF</div>
+                    <div class="file-types">JPG or PNG</div>
                     <div class="required-text">Artist image is required</div>
 
-                    <input type="file" id="image-upload" name="image" accept="image/*" style="display: none;" required>
+                    <input type="file" id="image-upload" name="image" accept="image/*" style="display: none;"
+                    {% if not artist or not artist.image %}required{% endif %}>
                 </div>
 
                 <!-- Form Fields -->
                 <div class="form-fields">
                     <div class="field-group">
                         <label class="field-label">Artist Name <span class="required">*</span></label>
-                        <input type="text" class="form-input" name="name" placeholder="Enter artist name" required>
+                        <input type="text" class="form-input" name="name" placeholder="Enter artist title" value="{{ artist.name|default:'' }}" required>
                     </div>
 
                     <div class="field-group">
                         <label class="field-label">Biography</label>
-                        <textarea class="form-textarea" name="biography"
-                            placeholder="Enter artist biography"></textarea>
+                        <textarea class="form-textarea" name="biography" 
+                            placeholder="Enter artist biography">{{ artist.bio|default:'' }}</textarea>
                     </div>
                 </div>
             </div>
@@ -61,9 +68,14 @@
 
             <!-- Form Actions -->
             <div class="form-actions">
-                <button type="submit" class="btn-primary">Add Artist</button>
-                <button type="button" class="btn-cancel" onclick="resetForm()">Cancel</button>
-                
+                <button type="submit" class="btn-primary">
+                    {% if edit_mode %}Save Changes{% else %}Add Artist{% endif %}
+                </button>
+                {% if edit_mode %}
+                    <a href="{% url 'detalle_artista' artist.id %}" class="btn-cancel">Cancel</a>
+                {% else %}
+                    <a href="{% url 'catalogo_albums' %}" class="btn-cancel">Cancel</a>
+                {% endif %}
             </div>
         </form>
     </div>

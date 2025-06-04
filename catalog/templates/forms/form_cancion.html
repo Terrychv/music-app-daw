@@ -11,8 +11,12 @@
 {% block content %}
 <div class="container">
     <div class="page-header">
-        <h1 class="page-title text-center">Add Song</h1>
-        <p class="page-subtitle text-center">##################</p>
+        <h1 class="page-title text-center">
+            {% if edit_mode %} Edit Song {% else %} Add Song {% endif %}
+        </h1>
+        <p class="page-subtitle text-center">
+            {% if edit_mode %}Update album details below{% else %}Fill in the details to create a new album{% endif %}
+        </p>
     </div>
     <div class="form-container">
         <form class="form-content" method="post" enctype="multipart/form-data">
@@ -35,11 +39,13 @@
                     </svg>
                     Upload Audio
                 </button>
+                {% if edit_mode and song.audio_file %}
+                    <div class="file-name">Current file: {{ song.audio_file.name }}</div>
+                {% endif %}
 
                 <div class="file-types">MP3 OR MP4</div>
-                <div class="required-text">Audio file is required</div>
 
-                <input type="file" id="audio-upload" name="audio_file" accept="audio/*" style="display: none;" required>
+                <input type="file" id="audio-upload" name="audio_file" accept="audio/*" style="display: none;">
 
             </div>
 
@@ -47,7 +53,8 @@
             <div class="form-fields">
                 <div class="field-group">
                     <label class="field-label">Song Title <span class="required">*</span></label>
-                    <input type="text" class="form-input" name="title" placeholder="Enter song title" required>
+                    <input type="text" class="form-input" name="title" placeholder="Enter song title" required
+                        value="{% if song %}{{ song.title }}{% endif %}">
                 </div>
 
                 <div class="field-row">
@@ -55,31 +62,45 @@
                         <label class="field-label">Artist <span class="required">*</span></label>
                         <select class="form-select" name="artist" id="artist-select" onchange="updateAlbums()" required>
                             <option value="">Select artist</option>
-                            {% for artist in artists %}
-                            <option value="{{ artist.id }}">{{ artist.name }}</option>
-                            {% endfor %}
+                                {% for artist in artists %}
+                            <option value="{{ artist.id }}" {% if song and artist.id == song.artist.id %}selected{% endif %}>
+                                {{ artist.name }}
+                            </option>
+                                {% endfor %}
                         </select>
                     </div>
 
                     <div class="field-group">
                         <label class="field-label">Album <span class="required">*</span></label>
-                        <select class="form-select" name="album" id="album-select" disabled required>
-                            <option value="">Select an artist first</option>
+                        <select class="form-select" name="album" id="album-select" {% if not edit_mode %}disabled{% endif %} required>
+                            {% if edit_mode and song %}
+                                <option value="">Select album</option>
+                                {% for album in albums %}
+                                    {% if album.artist.id == song.artist.id %}
+                                        <option value="{{ album.id }}" {% if album.id == song.album.id %}selected{% endif %}>
+                                            {{ album.title }}
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <option value="">Select an artist first</option>
+                            {% endif %}
                         </select>
                     </div>
                 </div>
-
+                
                 <div class="field-row">
                     <div class="field-group">
                         <label class="field-label">Track Number</label>
-                        <input type="number" class="form-input" name="track_number" id="track-number-input" readonly
-                            required>
+                        <input type="number" class="form-input" name="track_number" id="track-number-input" readonly required
+                            value="{% if song %}{{ song.track_number }}{% endif %}">
                     </div>
 
                     <div class="field-group">
                         <label class="field-label">Duration <span class="required">*</span></label>
                         <input type="text" class="form-input" name="duration" placeholder="MM:SS (e.g., 3:45)"
-                            pattern="^[0-9]{1,2}:[0-5][0-9]$" required>
+                            pattern="^[0-9]{1,2}:[0-5][0-9]$" required
+                            value="{% if song %}{{ song.duration|time:"i:s" }}{% endif %}">
                     </div>
                 </div>
 
@@ -87,7 +108,9 @@
                     <label class="field-label">Genres <span class="required">*</span></label>
                     <select class="form-select" name="genres" multiple required>
                         {% for genre in genres %}
-                        <option value="{{ genre.id }}">{{ genre.name }}</option>
+                        <option value="{{ genre.id }}" {% if song and genre in song.genres.all %}selected{% endif %}>
+                            {{ genre.name }}
+                        </option>
                         {% endfor %}
                     </select>
                     <small class="form-hint">Hold Ctrl (Windows) or Command (Mac) to select multiple.</small>
@@ -96,8 +119,14 @@
 
             <!-- Form Actions -->
             <div class="form-actions">
-                <button type="submit" class="btn-primary">Add Song</button>
-                <button type="button" class="btn-cancel" onclick="window.history.back()">Cancel</button>
+                <button type="submit" class="btn-primary">
+                    {% if edit_mode %}Save Changes{% else %}Add Song{% endif %}
+                </button>
+                {% if edit_mode %}
+                    <a href="{% url 'detalle_cancion' song.id %}" class="btn-cancel">Cancel</a>
+                {% else %}
+                    <a href="{% url 'catalogo_albums' %}" class="btn-cancel">Cancel</a>
+                {% endif %}
             </div>
         </form>
     </div>
