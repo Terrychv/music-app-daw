@@ -201,7 +201,8 @@ def form_album(request):
             title=title,
             artist=artist,
             release_date=release_date,
-            cover_image=cover_image
+            cover_image=cover_image,
+            created_by=user
         )
 
         if genres_ids:
@@ -287,6 +288,7 @@ def form_song(request):
             duration=duration_td,
             track_number=track_number,
             audio_file=audio_file,
+            created_by=user
         )
 
         if genre_ids:
@@ -304,9 +306,14 @@ def form_song(request):
 def edit_album(request, album_id):
     user = request.user
 
-    if user.role == 'user':
+    #  Primero obtén el álbum
+    album = get_object_or_404(Album, id=album_id)
+
+    #  Luego verifica si tiene permiso para editarlo
+    if not (user.is_admin or album.created_by == user):
         return redirect('catalogo_albums')
 
+    #  Artistas según permisos
     if user.is_admin:
         artists = Artist.objects.all()
     elif user.is_client:
@@ -315,9 +322,8 @@ def edit_album(request, album_id):
         artists = Artist.objects.none()
 
     genres = Genre.objects.all()
-    album = get_object_or_404(Album, id=album_id)
 
-    # Seguridad: si el artista no está entre los accesibles para el usuario
+    #  Verifica que el artista del álbum sea accesible
     if album.artist not in artists:
         return redirect('catalogo_albums')
 
@@ -348,11 +354,11 @@ def edit_album(request, album_id):
 @login_required
 def edit_artist(request, artist_id):
     user = request.user
-
-    if user.role == 'user':
-        return redirect('catalogo_albums')
-
     artist = get_object_or_404(Artist, id=artist_id)
+
+    # Permisos: solo admin o el creador puede editar
+    if not (user.is_admin or artist.created_by == user):
+        return redirect('catalogo_albums')
 
     if request.method == 'POST':
         artist.name = request.POST.get('name')
@@ -372,11 +378,11 @@ def edit_artist(request, artist_id):
 @login_required
 def edit_song(request, song_id):
     user = request.user
-
-    if user.role == 'user':
-        return redirect('catalogo_albums')
-
     song = get_object_or_404(Song, id=song_id)
+
+    # Permisos: solo admin o el creador puede editar
+    if not (user.is_admin or song.created_by == user):
+        return redirect('catalogo_albums')
 
     # Filtrar artistas y álbumes según permisos del usuario
     if user.is_admin:
@@ -402,7 +408,6 @@ def edit_song(request, song_id):
         artist = get_object_or_404(artists, id=artist_id)
         album = get_object_or_404(albums, id=album_id)
 
-        # Actualizar campos
         song.title = title
         song.artist = artist
         song.album = album
@@ -413,13 +418,11 @@ def edit_song(request, song_id):
             minutes, seconds = map(int, duration.split(':'))
             song.duration = timedelta(minutes=minutes, seconds=seconds)
 
-        # Actualizar archivo de audio si hay uno nuevo
         if 'audio_file' in request.FILES:
             song.audio_file = request.FILES['audio_file']
 
         song.save()
 
-        # Actualizar géneros
         if genre_ids:
             song.genres.set(genre_ids)
         else:
@@ -429,8 +432,8 @@ def edit_song(request, song_id):
 
     return render(request, 'forms/form_cancion.html', {
         'song': song,
-        'artists': Artist.objects.all(),
-        'albums': Album.objects.all(), 
+        'artists': artists,
+        'albums': albums,
         'genres': genres,
         'edit_mode': True,
     })
@@ -440,7 +443,7 @@ def delete_album(request, album_id):
     user = request.user
     album = get_object_or_404(Album, id=album_id)
 
-    if user.role == 'user' or (user.is_client and album.artist.created_by != user):
+    if not (user.is_admin or album.created_by == user):
         return redirect('catalogo_albums')
 
     if request.method == 'POST':
@@ -454,8 +457,8 @@ def delete_artist(request, artist_id):
     user = request.user
     artist = get_object_or_404(Artist, id=artist_id)
 
-    # Solo admins o el cliente que creó el artista pueden borrar
-    if not (user.is_admin or (user.is_client and artist.created_by == user)):
+    # Solo admins o el usuario que creó el artista pueden borrar
+    if not (user.is_admin or artist.created_by == user):
         return redirect('catalogo_albums')
 
     if request.method == 'POST':
@@ -469,7 +472,7 @@ def delete_song(request, song_id):
     user = request.user
     song = get_object_or_404(Song, id=song_id)
 
-    if not (user.is_admin or (user.is_client and song.artist.created_by == user)):
+    if not (user.is_admin or song.created_by == user):
         return redirect('catalogo_albums')
 
     if request.method == 'POST':

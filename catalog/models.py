@@ -4,7 +4,6 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.conf import settings
 
 
-
 # Create your models here.
 
 
@@ -39,6 +38,8 @@ class Album(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     comments = GenericRelation('comments.Comment')
     ratings = GenericRelation('comments.Rating')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.SET_NULL,null=True,blank=True,related_name='created_albums'
+    )
 
     def __str__(self):
         return f"{self.title} - {self.artist.name}"
@@ -69,6 +70,8 @@ class Song(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     comments = GenericRelation('comments.Comment')
     ratings = GenericRelation('comments.Rating')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.SET_NULL,null=True,blank=True,related_name='created_songs'
+    )
 
     def __str__(self):
         return f"{self.track_number}. {self.title} - {self.artist.name}"

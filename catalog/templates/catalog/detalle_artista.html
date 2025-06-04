@@ -27,7 +27,7 @@
             <h2>About</h2>
             <p class="about-text">{{ artist.bio|default:"No biography available." }}</p>
         </div>
-        {% if user.is_client or user.is_admin %}
+        {% if request.user == artist.created_by or  user.is_admin %}
         <div class="position-absolute end-0 bottom-0 m-3">
             <a href="{% url 'edit_artist' artist.id %}" class="btn btn-dark me-2">
                 <i class="bi bi-pencil text-primary"></i> Edit
