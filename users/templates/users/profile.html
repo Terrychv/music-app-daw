@@ -85,7 +85,22 @@
                 </div>
                 <div class="card-body">
                     <div id="activity-tab" class="tab-content active">
-                        <p class="text-white-50">Recent activity will appear here.</p>
+                        {% if actividad %}
+                            <ul class="list-group">
+                                {% for a in actividad %}
+                                    <li class="list-group-item">
+                                        {% if a.tipo == "comentario" %}
+                                            {{ a.content }} <br>
+                                        {% elif a.tipo == "puntuacion" %}
+                                            <strong>{{ a.content_object }}</strong> on <strong>{{ a.value }} ⭐</strong><br>
+                                        {% endif %}
+                                        <small class="text-white-50">{{ a.created_at|timesince }} ago</small>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-white-50">No hay actividad reciente.</p>
+                        {% endif %}
                     </div>
 
                     <div id="comments-tab" class="tab-content" style="display:none">

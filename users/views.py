@@ -10,6 +10,7 @@ from itertools import chain
 from collections import Counter
 from django.contrib.auth import logout
 from django.http import JsonResponse
+from operator import attrgetter
 import json
 
 def login_view(request):
@@ -74,15 +75,23 @@ def profile_view(request):
     album_genres = Genre.objects.filter(albums__ratings__in=album_ratings).annotate(count=Count('id'))
 
     # Combinar y ordenar por popularidad
-
-
     all_genres = list(chain(song_genres, album_genres))
     genre_counter = Counter([genre.name for genre in all_genres])
     top_genres = genre_counter.most_common(5)
+    # Añadir un atributo auxiliar a cada objeto para identificar su tipo
+    for c in comentarios:
+        c.tipo = 'comentario'
+
+    for p in puntuaciones:
+        p.tipo = 'puntuacion'
+
+    # Combinar y ordenar por fecha
+    actividad = sorted(chain(comentarios, puntuaciones), key=attrgetter('created_at'), reverse=True)
 
     return render(request, 'users/profile.html', {
         'comentarios': comentarios,
         'puntuaciones': puntuaciones,
+        'actividad': actividad,
         'likes_count': likes_count,
         'top_genres': top_genres,
     })
