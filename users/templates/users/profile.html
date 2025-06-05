@@ -124,6 +124,12 @@
 </div>
 
 <script>
+function showTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`${tabId}-tab`).style.display = 'block';
+    document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+}
 const editBtn = document.getElementById('edit-btn');
 const usernameDisplay = document.getElementById('username-display');
 let editing = false;
