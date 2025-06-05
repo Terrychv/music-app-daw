@@ -134,12 +134,28 @@ def detalle_album(request, album_id):
 def detalle_artista(request, artist_id):
     artist = get_object_or_404(Artist, id=artist_id)
     popular_songs = artist.songs.all()[:10]  # Top 10 songs
+
+    for song in popular_songs:
+        total_seconds = int(song.duration.total_seconds())
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+        song.formatted_duration = f"{minutes}:{seconds:02d}"
+    
     
     context = {
         'artist': artist,
         'popular_songs': popular_songs,
+        
+        
     }
     return render(request, 'catalog/detalle_artista.html', context)
+
+def format_duration(td):
+    total_seconds = int(td.total_seconds())
+    minutes = total_seconds // 60
+    seconds = total_seconds % 60
+    return f"{minutes:02}:{seconds:02}"
+
 
 def detalle_cancion(request, song_id):
     song = get_object_or_404(Song, id=song_id)
@@ -160,11 +176,17 @@ def detalle_cancion(request, song_id):
         rating_obj = Rating.objects.filter(user=request.user, content_type__model='song', object_id=song.id).first()
         if rating_obj:
             user_rating = rating_obj.value
+
+    formatted_duration = format_duration(song.duration)
+
+    for s in related_songs:
+        s.formatted_duration = format_duration(s.duration)
     
     context = {
         'song': song,
         'related_songs': related_songs,
         'user_rating': user_rating,
+        'formatted_duration': formatted_duration,
     }
     return render(request, 'catalog/detalle_cancion.html', context)
 

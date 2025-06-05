@@ -86,7 +86,7 @@
                         </div>
                     </td>
                     <td class="track-album">{{ song.album.title }}</td>
-                    <td class="track-duration">{{ song.duration|time:"i:s" }}</td>
+                    <td class="track-duration text-start">{{ song.formatted_duration }}</td>
                     <td class="track-menu">⋯</td>
                 </tr>
                 {% empty %}
