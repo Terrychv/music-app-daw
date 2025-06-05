@@ -9,9 +9,10 @@ from django.db.models import Count
 from itertools import chain
 from collections import Counter
 from django.contrib.auth import logout
+from django.http import JsonResponse
+import json
 
 def login_view(request):
-
     if request.user.is_authenticated:
         return redirect('catalogo_albums')
     
@@ -29,7 +30,6 @@ def login_view(request):
     return render(request, 'users/login.html')
 
 def signup_view(request):
-
     if request.user.is_authenticated:
         return redirect('catalogo_albums')
     
@@ -90,3 +90,25 @@ def profile_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+@login_required
+def edit_username(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            new_username = data.get('username', '').strip()
+
+            if not new_username:
+                return JsonResponse({'success': False, 'error': 'Username cannot be empty.'})
+
+            if CustomUser.objects.filter(username=new_username).exclude(id=request.user.id).exists():
+                return JsonResponse({'success': False, 'error': 'Username already taken.'})
+
+            request.user.username = new_username
+            request.user.save()
+            return JsonResponse({'success': True, 'new_username': new_username})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid data.'})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'})

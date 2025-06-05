@@ -1,14 +1,17 @@
 .profile-page {
     padding-top: 60px;
-    background-color: #0d0d0d;
+    background-color: black;
     min-height: 100vh;
     color: #fff;
 }
 
 .profile-header {
-    background: linear-gradient(90deg, #6a11cb 0%, #d0d8e5 100%);
+    background: linear-gradient(90deg,rgba(74, 48, 115, 1) 0%, rgba(35, 27, 79, 1) 60%);
     border-radius: 12px;
     color: white;
+    padding-top: 35px !important;
+    padding-bottom: 35px !important;
+    padding-left: 35px !important;
 }
 
 .icon-profile {
@@ -41,11 +44,89 @@
 }
 
 .tab-btn.active {
-    background-color: #fff;
+    background-color: #7145a3;
     color: #111;
     border-radius: 6px 6px 0 0;
 }
 
 .tab-content {
     padding-top: 15px;
+}
+
+.list-group-item {
+    background-color: #2b2b2b; /* fondo oscuro a juego con .tab-btn */
+    color: #fff;               /* texto blanco */
+    border: 1px solid #444;    /* borde tenue para distinguirlos */
+}
+
+/* Stats Section Styles */
+.stats-section {
+    background-color: #1a1a1a;
+    color: white;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.stats-title {
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.stat-card {
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: left;
+    transition: background-color 0.2s ease;
+    border: 1px solid #3a3a3a;
+}
+
+.stat-icon {
+    color: #9ca3af;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    color: #9ca3af;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* Top Genres Section */
+.top-genres-section {
+    margin-top: 2rem;
+}
+
+.genres-title {
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.genres-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.genre-tag {
+    background-color: #7c3aed;
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+    transition: background-color 0.2s ease;
 }

@@ -3,43 +3,77 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'users/css/profile.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid profile-page">
-    <div class="profile-header d-flex align-items-center p-3">
+    <div class=" perfil profile-header d-flex align-items-center p-3">
         <div class="me-3">
             <i class="bi bi-person-circle icon-profile"></i>
         </div>
         <div>
-            <h2 class="mb-0 text-white">{{ user.get_full_name|default:user.username }}</h2>
-            <p class="text-muted mb-0">@{{ user.username }}</p>
+            <h2 class="mb-0 text-white" id="username-display">{{ user.username }}</h2>
+            <form id="edit-username-form" method="POST" class="d-none">
+                {% csrf_token %}
+                <input type="text" name="username" id="username-input" class="form-control form-control-sm me-2" value="{{ user.username }}">
+        </form>
+        <button id="edit-btn" class="btn btn-sm btn-outline-light">Edit</button>
         </div>
     </div>
+
 
     <div class="row mt-4">
         <!-- Sidebar: Stats -->
         <div class="col-md-4">
-            <div class="card stats-card">
-                <div class="card-body">
-                    <h5 class="card-title">Stats</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="bi bi-chat-dots"></i> Comments: <strong>{{ comentarios|length }}</strong></li>
-                        <li><i class="bi bi-star"></i> Ratings: <strong>{{ puntuaciones|length }}</strong></li>
-                        <li><i class="bi bi-heart"></i> Likes: <strong>{{ likes_count }}</strong></li>
-                    </ul>
-
-                    <div class="mt-3">
-                        <h6 class="text-white-50">Top Genres</h6>
-                        {% for genre, count in top_genres %}
-                            <span class="badge bg-purple me-1">{{ genre }}</span>
-                        {% empty %}
-                            <p class="text-white-50 small">No genres available</p>
-                        {% endfor %}
+        <div class="stats-section">
+        <h5 class="stats-title mb-3">Stats</h5>
+        
+        <!-- Stats Grid -->
+        <div class="row g-3 mb-4 ">
+            <div class="col-6">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-chat-dots"></i>
                     </div>
+                    <div class="stat-label">Comments</div>
+                    <div class="stat-value">{{ comentarios|length }}</div>
                 </div>
             </div>
+            <div class="col-6">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-star"></i>
+                    </div>
+                    <div class="stat-label">Ratings</div>
+                    <div class="stat-value">{{ puntuaciones|length }}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-heart"></i>
+                    </div>
+                    <div class="stat-label">Likes</div>
+                    <div class="stat-value">{{ likes_count }}</div>
+                </div>
+            </div>
+        
         </div>
+
+        <!-- Top Genres -->
+        <div class="top-genres-section">
+            <h6 class="genres-title mb-3">Top Genres</h6>
+            <div class="genres-container">
+                {% for genre, count in top_genres %}
+                    <span class="genre-tag">{{ genre }}</span>
+                {% empty %}
+                    <p class="text-white-50 msall">No genres</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 
         <!-- Main Content: Tabs -->
         <div class="col-md-8">
@@ -90,11 +124,59 @@
 </div>
 
 <script>
-function showTab(tabId) {
-    document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById(`${tabId}-tab`).style.display = 'block';
-    document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
-}
+const editBtn = document.getElementById('edit-btn');
+const usernameDisplay = document.getElementById('username-display');
+let editing = false;
+
+editBtn.addEventListener('click', () => {
+    if (editing) return;  // Si ya estamos editando, no hacer nada
+
+    editing = true;
+    editBtn.disabled = true;
+
+    const currentName = usernameDisplay.textContent.trim();
+    usernameDisplay.innerHTML = `
+        <input type="text" id="username-input" value="${currentName}" />
+        <button id="save-btn" class="btn btn-sm ms-2" style="background-color: #9b59b6; color: white; border:none;">Guardar</button>
+        <button id="cancel-btn" class="btn btn-sm ms-1" style="background-color: #1a1a1a; color: white; border:none;">Cancelar</button>
+    `;
+
+    document.getElementById('save-btn').addEventListener('click', () => {
+        const newName = document.getElementById('username-input').value.trim();
+        if (!newName) {
+            alert('El nombre no puede estar vacío.');
+            return;
+        }
+        fetch("{% url 'edit_username' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({username: newName})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                usernameDisplay.innerHTML = `<h2 class="mb-0 text-white">${data.new_username}</h2>`;
+            } else {
+                alert(data.error);
+            }
+            editing = false;
+            editBtn.disabled = false;
+        })
+        .catch(() => {
+            alert('Error al actualizar el nombre');
+            editing = false;
+            editBtn.disabled = false;
+        });
+    });
+
+    document.getElementById('cancel-btn').addEventListener('click', () => {
+        usernameDisplay.innerHTML = `<h2 class="mb-0 text-white">${currentName}</h2>`;
+        editing = false;
+        editBtn.disabled = false;
+    });
+});
 </script>
 {% endblock %}
