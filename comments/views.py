@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -73,6 +74,26 @@ def edit_comment(request, comment_id):
     return redirect('home')
 
 @login_required
+def like_comment(request):
+    if request.method == 'POST':
+        comment_id = request.POST.get('comment_id')
+        comment = get_object_or_404(Comment, id=comment_id)
+        user = request.user
+
+        if user in comment.likes.all():
+            comment.likes.remove(user)
+            liked = False
+        else:
+            comment.likes.add(user)
+            liked = True
+
+        return JsonResponse({
+            'liked': liked,
+            'likes_count': comment.likes.count()
+        })
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+@login_required
 def ratings_usuario(request):
     song_type = ContentType.objects.get_for_model(Song)
     album_type = ContentType.objects.get_for_model(Album)
@@ -122,7 +143,6 @@ def rate_album(request, album_id):
                 object_id=album.id,
                 defaults={'value': rating_value}
             )
-           
 
         except (ValueError, TypeError):
             pass  # ignoramos valores inválidos

@@ -12,6 +12,7 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    likes = models.ManyToManyField(User, related_name='liked_comments', blank=True)
 
     # Relación genérica
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -23,6 +24,8 @@ class Comment(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+    def total_likes(self):
+        return self.likes.count()
 
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')

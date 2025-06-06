@@ -367,17 +367,13 @@
             align-items: center;
         }
 
-        .comment-action {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #8a8aa0;
-            cursor: pointer;
-            font-size: 0.9rem;
+        .bi-heart, .like-btn{
+            color: rgb(163, 53, 53);
+            padding-right: 5px;
         }
 
-        .comment-action:hover {
-            color: #ffffff;
+        .like-btn:hover, .bi-heart:hover {
+            color: red;
         }
 
         /* Related Songs Section */

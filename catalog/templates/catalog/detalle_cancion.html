@@ -165,14 +165,10 @@
                         </div>
                         <div class="comment-text">{{ comment.content }}</div>
                         <div class="comment-actions">
-                            <div class="comment-action">
-                                <span>♡</span>
-                                <span>0</span>
-                            </div>
-                            <div class="comment-action">
-                                <span>↩</span>
-                                <span>Reply</span>
-                            </div>
+                            <button class="btn p-0 m-0 align-baseline like-btn" data-comment-id="{{ comment.id }}">
+                                <i class="bi bi-heart"></i>
+                                <span class="likes-count">{{ comment.likes.count }}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -319,7 +315,7 @@
         currentTimeSpan.textContent = formatTime(audio.currentTime);
     }
 
-     function formatTime(seconds) {
+    function formatTime(seconds) {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = Math.floor(seconds % 60);
         return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
@@ -345,6 +341,28 @@
     if (audio) {
         audio.addEventListener('timeupdate', updateProgress);
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.like-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const commentId = this.dataset.commentId;
+                fetch("{% url 'comments:like_comment' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `comment_id=${commentId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        this.querySelector('.likes-count').textContent = data.likes_count;
+                    }
+                });
+            });
+        });
+    });
 </script>
 {% endblock %}
 

@@ -62,8 +62,8 @@ def profile_view(request):
     comentarios = Comment.objects.filter(user=user).select_related('content_type')
     puntuaciones = Rating.objects.filter(user=user).select_related('content_type')
 
-    # Conteo de likes falsos por ahora (puedes ajustarlo si usas modelo Like)
-    likes_count = 312
+    # Conteo de likes 
+    likes_count = Comment.objects.filter(likes=user).count()
 
     # Top géneros por cantidad de puntuaciones o comentarios
     # Obtener géneros desde canciones puntuadas por el usuario

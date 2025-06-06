@@ -59,14 +59,10 @@
 
             <!-- Comment Actions -->
             <div class="comment-actions">
-                <a href="#" class="action-btn">
-                    <i class="bi bi-heart"></i>
-                    <span>{{ comentario.likes_count|default:0 }}</span>
-                </a>
-                <a href="#" class="action-btn">
-                    <i class="bi bi-chat"></i>
-                    <span>{{ comentario.replies.count|default:0 }}</span>
-                </a>
+                <span class="action-info">
+                    <i class="bi {% if user in comentario.likes.all %}bi-heart-fill text-danger{% else %}bi-heart{% endif %}"></i>
+                <span>{{ comentario.likes.count|default:0 }}</span>
+                </span>
             </div>
 
             <!-- Replies Section -->
@@ -94,14 +90,14 @@
                 </div>
                 {% endfor %}
 
-                {% if comentario.replies.count > 3 %}
+                <!-- {% if comentario.replies.count > 3 %}
                 <div class="mt-2">
                     <a href="#" class="action-btn">
                         <i class="bi bi-arrow-down"></i>
                         <span>Show {{ comentario.replies.count|add:"-3" }} more replies</span>
                     </a>
                 </div>
-                {% endif %}
+                {% endif %} -->
             </div>
             {% endif %}
         </div>

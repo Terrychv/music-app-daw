@@ -97,24 +97,6 @@
         gap: 20px;
     }
 
-    .action-btn {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        color: #9ca3af;
-        text-decoration: none;
-        font-size: 0.9rem;
-        transition: color 0.3s ease;
-    }
-
-    .action-btn:hover {
-        color: #ffffff;
-    }
-
-    .action-btn i {
-        font-size: 1rem;
-    }
-
     .replies-section {
         margin-top: 20px;
         padding-top: 15px;
@@ -227,4 +209,3 @@
     color: inherit;
 
     }
-  

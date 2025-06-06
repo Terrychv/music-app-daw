@@ -177,12 +177,12 @@
                         </div> 
                         {% endif %}
                         <div class="comment-actions">
-                            <span class="like-btn">♡ 0</span>
-                            <span class="reply-btn">Reply</span>
+                            <button class="btn p-0 m-0 align-baseline like-btn" data-comment-id="{{ comment.id }}">
+                                <i class="bi bi-heart"></i><span class="likes-count">{{ comment.likes.count }}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
-
                 {%  if comment.user == user or user.is_admin %}
                 <!--Editar comentario-->
                 <div class="modal fade" id="editModal{{ comment.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ comment.id }}" aria-hidden="true">
@@ -237,4 +237,28 @@
             </div>
         </div>
     </div>
-    {% endblock %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.like-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const commentId = this.dataset.commentId;
+                fetch("{% url 'comments:like_comment' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `comment_id=${commentId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        this.querySelector('.likes-count').textContent = data.likes_count;
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

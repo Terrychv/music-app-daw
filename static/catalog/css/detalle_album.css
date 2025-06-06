@@ -273,12 +273,17 @@
             margin-bottom: 10px;
         }
 
-        .comment-actions {
+        /* .comment-actions {
             display: flex;
             align-items: center;
             gap: 15px;
             font-size: 12px;
             color: rgba(255, 255, 255, 0.6);
+        } */
+
+        .bi-heart, .like-btn{
+            color: rgb(163, 53, 53);
+            padding-right: 5px;
         }
 
         .like-btn {
@@ -290,16 +295,7 @@
         }
 
         .like-btn:hover {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .reply-btn {
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .reply-btn:hover {
-            color: rgba(255, 255, 255, 0.8);
+            color: red;
         }
 
         .more-btn {
