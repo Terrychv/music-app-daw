@@ -164,3 +164,27 @@ def rate_song(request, song_id):
         )
 
     return redirect('detalle_cancion', song_id=song.id)
+
+@login_required
+def likes_usuario(request):
+    user = request.user
+
+    album_type = ContentType.objects.get_for_model(Album)
+    song_type = ContentType.objects.get_for_model(Song)
+
+    # Comentarios con like del usuario, que estén asociados a álbumes o canciones
+    liked_comments = Comment.objects.filter(
+        likes=user
+    ).filter(
+        Q(content_type=album_type) | Q(content_type=song_type)
+    ).select_related('user__profile').prefetch_related('likes')
+
+    paginator = Paginator(liked_comments, 5)  # Comentarios por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'likes_usuario.html', {
+        'liked_comments': page_obj,
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+    })

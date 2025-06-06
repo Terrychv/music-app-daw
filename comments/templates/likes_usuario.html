@@ -1,0 +1,159 @@
+{% extends "catalog/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'comments/css/likes_usuario.css' %}">
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+{% endblock %}
+
+{% block extra_top %}
+{% include "partials/barra-busqueda.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="page-title">Comments You've Liked</h1>
+    
+    {% if liked_comments %}
+        {% for comment in liked_comments %}
+        <div class="comment-card">
+            <!-- Content Information -->
+            <div class="content-info">
+                {% if comment.content_type.model == 'album' %}
+                    <img src="{{ comment.content_object.cover_image.url }}" 
+                        alt="{{ comment.content_object.title }}" class="content-artwork">
+                {% elif like.comment.content_type.model == 'song' %}
+                    <img src="{{ comment.content_object.album.cover_image.url }}" 
+                        alt="{{ comment.content_object.title }}" class="content-artwork">
+                {% endif %}
+
+            <div class="content-details">
+                <h6>{{ comment.content_object.title }}</h6>
+                    <p class="artist-name">
+                        {% if comment.content_type.model == 'album' %}
+                            by {{ comment.content_object.artist.name }}
+                        {% elif comment.content_type.model == 'song' %}
+                            by {{ comment.content_object.artist.name }}
+                        {% endif %}
+                    </p>
+            </div>
+        </div>
+
+            <!-- Comment Header -->
+            <div class="comment-header">
+                {% if comment.user.profile.avatar %}
+                    <img src="{{ comment.user.profile.avatar.url }}" alt="{{ like.comment.user.username }}" class="user-avatar">
+                {% else %}
+                    <div class="user-avatar">{{ like.comment.user.username|first|upper }}</div>
+                {% endif %}
+                <span class="username">{{ comment.user.username }}</span>
+                <span class="comment-timestamp">{{ like.created_at|timesince }} ago</span>
+            </div>
+
+            <!-- Comment Text -->
+            <div class="comment-text">
+                {{ comment.content }}
+            </div>
+
+            <!-- Comment Actions -->
+            <div class="comment-actions">
+                <button class="action-btn" onclick="toggleLike({{ comment.id }}, 'comment')">
+                    <i class="bi bi-heart-fill"></i>
+                    <span>{{ comment.likes_count|default:0 }}</span>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Liked comments pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link bg-dark border-secondary text-white" href="?page=1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link bg-dark border-secondary text-white" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link bg-purple border-purple">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link bg-dark border-secondary text-white" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link bg-dark border-secondary text-white" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+    {% else %}
+        <!-- No Liked Comments State -->
+        <div class="no-likes">
+            <i class="bi bi-heart"></i>
+            <h4>No Liked Comments Yet</h4>
+            <p>You haven't liked any comments yet. Start exploring and show appreciation for great comments!</p>
+            <a href="{% url 'catalogo_albums' %}" class="btn btn-purple mt-3">
+                <i class="bi bi-music-note-beamed me-2"></i>Explore Music
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleLike(commentId, itemType) {
+    // AJAX call to toggle like
+    fetch(`/api/toggle-like/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            'item_id': commentId,
+            'item_type': itemType
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (!data.liked) {
+                // If unliked, remove the comment card from the page
+                const button = document.querySelector(`[onclick="toggleLike(${commentId}, '${itemType}')"]`);
+                const commentCard = button.closest('.comment-card');
+                commentCard.style.transition = 'all 0.3s ease';
+                commentCard.style.opacity = '0';
+                commentCard.style.transform = 'translateX(-100%)';
+                
+                setTimeout(() => {
+                    commentCard.remove();
+                    
+                    // Check if no more comments exist
+                    const remainingCards = document.querySelectorAll('.comment-card');
+                    if (remainingCards.length === 0) {
+                        location.reload(); // Reload to show "no likes" state
+                    }
+                }, 300);
+            } else {
+                // Update like count
+                const button = document.querySelector(`[onclick="toggleLike(${commentId}, '${itemType}')"]`);
+                const count = button.querySelector('span');
+                count.textContent = data.likes_count;
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>
+{% endblock %}
