@@ -47,14 +47,16 @@
         <h2>Albums</h2>
         <div class="albums-grid">
             {% for album in artist.albums.all %}
+            <a href="{% url 'detalle_album' album.id %}" class="album-card-link">
             <div class="album-card">
                 <img src="{{ album.cover_image.url }}" 
-                    alt="{{ album.title }}" class="album-cover">
+                     alt="{{ album.title }}" class="album-cover">
                 <div class="album-info">
                     <div class="album-title">{{ album.title }}</div>
                     <div class="album-year">{{ album.release_date.year }}</div>
                 </div>
             </div>
+        </a>
             {% empty %}
             <p class="no-albums">No albums available.</p>
             {% endfor %}
@@ -79,11 +81,13 @@
                 <tr>
                     <td class="track-number">{{ forloop.counter }}</td>
                     <td>
-                        <div class="track-info">
-                            <img src="{{ song.album.cover_image.url|default:'/placeholder.svg?height=40&width=40&query=album cover' }}" 
-                                alt="{{ song.album.title }}" class="track-cover">
-                            <div class="track-title">{{ song.title }}</div>
-                        </div>
+                        <a href="{% url 'detalle_cancion' song.id %}" class="track-link">
+                            <div class="track-info">
+                                <img src="{{ song.album.cover_image.url|default:'/placeholder.svg' }}" 
+                                    alt="{{ song.album.title }}" class="track-cover">
+                                <div class="track-title">{{ song.title }}</div>
+                            </div>
+                        </a>
                     </td>
                     <td class="track-album">{{ song.album.title }}</td>
                     <td class="track-duration text-start">{{ song.formatted_duration }}</td>

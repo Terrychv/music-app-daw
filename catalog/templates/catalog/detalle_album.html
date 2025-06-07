@@ -40,7 +40,7 @@
                 <div class="stars">
                     {% for i in "12345" %}
                     {% if forloop.counter <= album.rating_stars %} ★ {% else %} ☆ {% endif %} {% endfor %} </div>
-                        <span class="rating-text">{{ album.average_rating }} ({{ album.ratings.count }} ratings)</span>
+                        <span class="rating-text">{{ album.average_rating|floatformat:1 }} ({{ album.ratings.count }} ratings)</span>
                 </div>
                 <div class="album-details">
                     <div class="detail-row">
@@ -153,7 +153,7 @@
                 <!-- Comments List -->
                 {% for comment in comments %}
                 <div class="comment">
-                    <img src="{{ comment.user.profile.avatar.url }}" class="user-avatar">
+                    <img src="{{ comment.user.profile.avatar.url }}" class="user-avatar" alt="User avatar">
                     <div id="comment-{{ comment.id }}" class="comment"></div>
                     <div class="comment-content">
                         <div class="comment-header">

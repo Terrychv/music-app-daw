@@ -214,3 +214,17 @@
         .track-menu:hover {
             color: #ffffff;
         }
+
+        .album-card-link {
+        text-decoration: none;
+        color: inherit;
+        display: inline-block;
+        }
+
+        .track-link {
+        text-decoration: none;  
+        color: inherit;          
+        display: block;          
+        }
+
+        

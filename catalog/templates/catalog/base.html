@@ -55,7 +55,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'comments:likes_usuario' %}" class="nav-link text-white d-flex align-items-center">
+                <a href="{% url 'comments:likes_usuario' %}" class="nav-link text-white d-flex align-items-center {% if request.path == '/comments/likes_usuario/' %}active{% endif %}">
                     <i class="bi bi-hand-thumbs-up me-2"></i> My Likes
                 </a>
             </li>

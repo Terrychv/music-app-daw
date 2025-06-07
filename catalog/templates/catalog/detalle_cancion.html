@@ -40,7 +40,7 @@
                         {% endif %}
                     {% endfor %}
                 </div>
-                <span class="rating-text">{{ song.average_rating }} ({{ song.ratings.count }} ratings)</span>
+                <span class="rating-text">{{ song.average_rating|floatformat:1 }} ({{ song.ratings.count }} ratings)</span>
             </div>
             <div class="p-1 rounded">
                     {% if user.is_authenticated %}
