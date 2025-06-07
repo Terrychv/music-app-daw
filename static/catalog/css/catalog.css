@@ -44,12 +44,27 @@
     cursor: pointer;
 }
 
+.list-group-item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none !important;
+    text-decoration: none !important;
+    border-radius: 16px;
+    overflow: visible;
+    box-shadow: none;
+}
+
+.list-group-item:hover {
+    transform: scale(1.01);
+    box-shadow:
+        0 0 12px rgba(187, 134, 252, 0.4);
+    cursor: pointer;
+}
 .gradient-comentarios {
-    background: linear-gradient(to bottom, #2e0249, #57059e);
+    background: linear-gradient(to bottom, #351752, #48325c);
 }
 
 .gradient-valoraciones {
-    background: linear-gradient(to bottom, #ca6bae, #79153b);
+    background: linear-gradient(to bottom, #440a18, #502938);
 }
 
 .enlace-secundario {
@@ -62,3 +77,17 @@
     color: #fff;
 }
 
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 10px;
+    background: #757575;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.8rem;
+    object-fit: cover;
+}

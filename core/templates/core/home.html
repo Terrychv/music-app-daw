@@ -38,14 +38,13 @@
                     <div class="input-group">
                         <input type="text" class="form-control buscador-principal"
                             placeholder="Search for any artist, album, or song...">
-                        <button class="btn btn-secondary">All</button>
                         <button class="btn btn-morado">Search</button>
                     </div>
                 </div>
             </div>
 
             <div class="mt-4">
-                <a href="#" class="btn btn-morado me-3 px-4">Get Started</a>
+                <a href="{% url 'login' %}" class="btn btn-morado me-3 px-4">Get Started</a>
                 <a href="{% url 'catalogo_albums' %}" class="btn btn-morado-borde px-4">Explore Library</a>
             </div>
         </div>

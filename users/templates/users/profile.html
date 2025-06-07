@@ -10,15 +10,21 @@
 <div class="container-fluid profile-page">
     <div class=" perfil profile-header d-flex align-items-center p-3">
         <div class="me-3">
-            <i class="bi bi-person-circle icon-profile"></i>
+            <div class="upload-area" style="width: 100px; height: 100px; cursor: pointer;" 
+                onclick="document.getElementById('avatar-upload').click()">
+                <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="user-avatar">
+            </div>
+            <input type="file" id="avatar-upload" name="avatar" style="display:none" accept="image/*">
         </div>
-        <div>
-            <h2 class="mb-0 text-white" id="username-display">{{ user.username }}</h2>
+        <div class="name">
+            <div class="d-flex align-items-center mb-2">
+                <h2 class="mb-0 text-white me-3" id="username-display">{{ user.username }}</h2>
+                <button id="edit-btn" class="btn btn-sm btn-outline-light">Edit</button>
+            </div>
             <form id="edit-username-form" method="POST" class="d-none">
                 {% csrf_token %}
                 <input type="text" name="username" id="username-input" class="form-control form-control-sm me-2" value="{{ user.username }}">
-        </form>
-        <button id="edit-btn" class="btn btn-sm btn-outline-light">Edit</button>
+            </form>
         </div>
     </div>
 
@@ -198,6 +204,32 @@ editBtn.addEventListener('click', () => {
         editing = false;
         editBtn.disabled = false;
     });
+});
+
+document.getElementById('avatar-upload').addEventListener('change', function() {
+    const fileInput = this;
+    if (fileInput.files && fileInput.files[0]) {
+        const formData = new FormData();
+        formData.append('avatar', fileInput.files[0]);
+
+        fetch("{% url 'change_avatar' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Actualizar la imagen en la página sin recargar
+                document.querySelector('.upload-area img').src = data.avatar_url + '?t=' + new Date().getTime();
+            } else {
+                alert(data.error || 'Error al subir avatar');
+            }
+        })
+        .catch(() => alert('Error en la petición'));
+    }
 });
 </script>
 {% endblock %}

@@ -131,7 +131,7 @@
                 {% if user.is_authenticated %}
                 <form class="comment-form" method="post" action="#">
                     {% csrf_token %}
-                    <div class="user-avatar"></div>
+                    <img src="{{ comment.user.profile.avatar.url }}" class="user-avatar">
                     <div class="comment-input-container">
                         <textarea class="comment-input" name="content" placeholder="Add a comment..." required></textarea>
                         <button type="submit" class="comment-submit">Comment</button>
@@ -141,7 +141,7 @@
                 
                 {% for comment in song.comments.all %}
                 <div class="comment">
-                    <div class="comment-avatar">{{ comment.user.username|first|upper }}</div>
+                    <img src="{{ comment.user.profile.avatar.url }}" class="user-avatar">
                     <div id="comment-{{ comment.id }}" class="comment"></div>
                     <div class="comment-content">
                         <div class="comment-header">

@@ -52,7 +52,7 @@
 <!-- Sección: Most Commented Songs -->
 <div class="mt-5 px-2">
     <div class="seccion-titulo">
-        <h4>Most Commented Songs</h4>
+        <h4>Most Rated Songs</h4>
         <a href="{% url 'top_canciones'%}">See all</a>
     </div>
 
@@ -74,7 +74,7 @@
 
             <!-- Comentarios -->
             <div class="text-end text-purple">
-                <i class="bi bi-chat-dots"></i> {{ song.comments.count }} comments
+                <i class="bi bi-heart"></i> {{ song.ratings.count }} ratings
             </div>
         </a>
         {% endfor %}
@@ -100,7 +100,13 @@
                 {% for comment in recent_comments %}
                 <div class="mb-3">
                     <div class="d-flex align-items-center mb-1">
-                        <i class="bi bi-person-circle fs-5 me-2"></i>
+                        {% if comment.content_object.album %}
+                            <!-- Es una canción: saco la imagen del álbum -->
+                            <img src="{{ comment.content_object.album.cover_image.url }}" class="user-avatar" alt="Album cover">
+                        {% else %}
+                            <!-- Es un álbum: saco la portada directamente -->
+                            <img src="{{ comment.content_object.cover_image.url }}" class="user-avatar" alt="Album cover">
+                        {% endif %}
                         <strong>{{ comment.content_object.title }}</strong>
                         <small class="ms-auto ">{{ comment.created_at|timesince }} ago</small>
                     </div>
@@ -123,7 +129,13 @@
                 {% for rating in recent_ratings %}
                 <div class="mb-3">
                     <div class="d-flex align-items-center mb-1">
-                        <i class="bi bi-disc fs-5 me-2"></i>
+                        {% if rating.content_object.album %}
+                            <!-- Es una canción: saco la imagen del álbum -->
+                            <img src="{{ rating.content_object.album.cover_image.url }}" class="user-avatar" alt="Album cover">
+                        {% else %}
+                            <!-- Es un álbum: saco la portada directamente -->
+                            <img src="{{ rating.content_object.cover_image.url }}" class="user-avatar" alt="Album cover">
+                        {% endif %}
                         <strong>{{ rating.content_object.title }}</strong>
                         <span class="ms-auto text-warning">
                             <i class="bi bi-star-fill"></i> {{ rating.value }}

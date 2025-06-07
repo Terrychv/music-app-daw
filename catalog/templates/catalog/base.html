@@ -18,7 +18,7 @@
 <div class="d-flex">
 
     <!-- SIDEBAR -->
-    <nav class="sidebar p-4 d-flex flex-column" style="width: 300px; height: 100vh; position: fixed; border-right: 2px solid #0f0f0f;">
+    <nav class="sidebar p-4 d-flex flex-column" style="width: 300px; height: 100vh; position: fixed; border-right: 2px solid #222222;">
         <h4 class="text-purple mb-4 mt-2"><a  href="{% url 'home'%}" style="text-decoration: none; color: inherit;">🎵 Trackly</a></h4>
 
         <!-- Menú principal -->
@@ -113,8 +113,8 @@
     <div class="flex-grow-1" style="margin-left: 300px;">
         <!-- Top navbar -->
         <div class="top-navbar d-flex justify-content-end align-items-center px-4 py-3">
-        <i class="bi bi-person-circle fs-4 text-white me-2"></i>
         {% if user.is_authenticated %}
+            <img src="{{ user.profile.avatar.url }}" class="user-avatar-navbar">
             <a href="{% url 'profile' %}" class="text-white text-decoration-none me-2">
                 {{ user.username }}
             </a>

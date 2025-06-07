@@ -121,3 +121,19 @@ def edit_username(request):
             return JsonResponse({'success': False, 'error': 'Invalid data.'})
 
     return JsonResponse({'success': False, 'error': 'Invalid request method.'})
+
+@login_required
+def change_avatar(request):
+    if request.method == "POST":
+        avatar = request.FILES.get('avatar')
+        if avatar:
+            profile = request.user.profile
+            profile.avatar = avatar
+            profile.save()
+            return JsonResponse({
+                'success': True,
+                'avatar_url': profile.avatar.url,
+            })
+        else:
+            return JsonResponse({'success': False, 'error': 'No se envió ninguna imagen'})
+    return JsonResponse({'success': False, 'error': 'Método no permitido'})

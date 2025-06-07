@@ -24,3 +24,8 @@ input::placeholder {
     background-color: rgba(0, 0, 0);
     backdrop-filter: blur(6px);
 }
+
+.btn-color{
+    background-color: #7738c4;
+    color: white;
+}

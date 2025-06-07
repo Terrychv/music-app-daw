@@ -207,5 +207,19 @@
     .comment-card-link {
     text-decoration: none;
     color: inherit;
+    }
 
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        margin-right: 10px;
+        background: #f59e0b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 0.8rem;
+        object-fit: cover;
     }

@@ -144,7 +144,7 @@
                 {% if user.is_authenticated %}
                 <form class="comment-form" method="post" action="{% url 'detalle_album' album.id %}">
                     {% csrf_token %}
-                    <div class="avatar"></div>
+                    <img src="{{ comment.user.profile.avatar.url }}" class="user-avatar">
                     <textarea class="comment-input" name="content" placeholder="Add a comment..." required></textarea>
                     <button type="submit" class="comment-btn">Comment</button>
                 </form>
@@ -153,7 +153,7 @@
                 <!-- Comments List -->
                 {% for comment in comments %}
                 <div class="comment">
-                    <div class="avatar"></div>
+                    <img src="{{ comment.user.profile.avatar.url }}" class="user-avatar">
                     <div id="comment-{{ comment.id }}" class="comment"></div>
                     <div class="comment-content">
                         <div class="comment-header">

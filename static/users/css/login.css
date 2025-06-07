@@ -1,22 +1,31 @@
 .bg-light-purple {
-    background-color: #5e3589;
+    background-color: #7738c4;
 }
 
 .btn-purple {
-    background-color: #9b5de5;
+    background-color: #7738c4;
     color: white;
     border: none;
 }
 .btn-purple:hover {
-    background-color: #7d3fbd;
+    background-color: #8c5bbd;
 }
 
 .icon-circle {
     width: 48px;
     height: 48px;
-    background-color: #9b5de5;
+    background-color: #7738c4;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+}
+.login-card {
+    box-shadow:
+        0 0 30px rgba(166, 78, 255, 0.5),   /* morado más brillante */
+        0 0 60px rgba(153, 90, 255, 0.4),   /* violeta */
+        0 0 90px rgba(90, 51, 161, 0.3),   /* azulado */
+        0 0 120px rgba(50, 90, 180, 0.2),   /* azul marino difuminado */
+        0 0 150px rgba(20, 50, 120, 0.15);  /* azul marino más oscuro */
+    transition: box-shadow 0.3s ease-in-out;
 }

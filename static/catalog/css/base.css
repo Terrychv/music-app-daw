@@ -20,9 +20,8 @@
     margin-left: 4px;
 }
 
-
 .nav-link:hover {
-    background-color: #bb86fc;
+    background-color: #7738c4;
     color: white !important;
     border-radius: 6px;
 }
@@ -36,7 +35,7 @@
 }
 
 .btn-purple {
-    background-color: #bb86fc;
+    background-color: #7738c4;
     color: white;
     border: none;
 }
@@ -52,4 +51,19 @@
 
 input::placeholder {
     color: #777 !important;
+}
+
+    .user-avatar-navbar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #757575;
+    display: flex;
+    margin-right: 15px;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.8rem;
+    object-fit: cover;
 }

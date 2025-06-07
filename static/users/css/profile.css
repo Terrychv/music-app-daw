@@ -14,9 +14,8 @@
     padding-left: 35px !important;
 }
 
-.icon-profile {
-    font-size: 3rem;
-    color: white;
+.name{
+    margin-left: 20px;
 }
 
 .card {
@@ -129,4 +128,26 @@
     font-weight: 500;
     display: inline-block;
     transition: background-color 0.2s ease;
+}
+
+    .user-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #757575;
+    display: flex;
+    margin-right: 15px;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.8rem;
+    object-fit: cover;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
 }
